@@ -1,0 +1,197 @@
+openapi: 3.0.0
+info:
+  title: Ezzy Pay
+  version: '1.0'
+  description: платёжное API для совершения массовых транзакций между сторонними приложениями и MediaCube.ID
+  contact:
+    name: Egor
+    email: en@mediacube.network
+  termsOfService: 'https://apidocks.ezzy.co/terms'
+servers:
+  - url: 'https://ezzy.co'
+    description: Production
+  - description: Production (Legacy)
+    url: 'https://mediacube.id'
+  - description: Dev Enviroment
+    url: 'https://id.mediacube.dev'
+paths:
+  payments:
+    post:
+      summary: Создание транзакций
+      operationId: post-payments
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction-Create-Response'
+              examples:
+                Example:
+                  value:
+                    data:
+                      request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
+                      status: 2
+                      err_msg: null
+        '401':
+          description: У вашего Access Token нет доступа
+        '403':
+          description: У вашего Identify Key не хватает прав на совершение операции
+        '422':
+          description: Неверные данные
+      description: Создание транзакции
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction-Create'
+            examples: {}
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              properties: {}
+          text/html:
+            schema:
+              type: object
+              properties: {}
+          text/plain:
+            schema:
+              type: object
+              properties: {}
+          application/EDI-X12:
+            schema:
+              type: object
+              properties: {}
+        description: ''
+      tags:
+        - Payments
+    get:
+      summary: Получение статуса транзакций
+      operationId: get-payments
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction-Status-Response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      description: Статус транзакции
+      tags:
+        - Payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tarnsaction-Status'
+    parameters: []
+components:
+  schemas:
+    Transaction-Create-Response:
+      title: Схема создания транзакций (ответ)
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            request_id:
+              type: string
+            status:
+              type: string
+            err_msg:
+              type: string
+      x-examples:
+        Example:
+          data:
+            request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
+            status: 2
+            err_msg: null
+    Transaction-Create:
+      title: Схема создания транзакций
+      type: object
+      x-examples: {}
+      properties:
+        identify:
+          type: string
+        purpose:
+          type: integer
+          enum:
+            - 1
+            - 2
+          example: 1
+        request_id:
+          type: string
+          minLength: 16
+          maxLength: 255
+          description: случайно сгенерированная уникальная строка
+        description:
+          type: string
+          description: сообщение о снятии средств с вашего счета Ezzy. Будет отображено во вкладке _Транзакции_ в Mediacube.ID
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              wallet:
+                type: string
+                description: существующий номер кошелька пользователя системы MediaCube
+                minLength: 16
+                maxLength: 16
+              amount:
+                type: number
+              description:
+                type: string
+                description: сообщение о приходе средств. Будет отображено во вкладке _Транзакции_ в Mediacube.ID
+            required:
+              - wallet
+              - amount
+              - description
+      required:
+        - identify
+        - purpose
+        - request_id
+        - description
+        - data
+    Tarnsaction-Status:
+      title: Tarnsaction-Status
+      type: object
+      properties:
+        identify:
+          type: string
+        request_id:
+          type: string
+          minLength: 16
+          maxLength: 255
+          example: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
+      required:
+        - identify
+        - request_id
+    Transaction-Status-Response:
+      title: Transaction-Status-Response
+      type: object
+      x-examples:
+        Ezample:
+          data:
+            request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
+            status: 2
+      properties:
+        data:
+          type: object
+          properties:
+            request_id:
+              type: string
+            status:
+              type: string
+      required:
+        - data
+  securitySchemes: {}
+tags:
+  - name: Payments
