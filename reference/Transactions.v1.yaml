@@ -12,7 +12,7 @@ servers:
     description: Production
   - description: Production (Legacy)
     url: 'https://mediacube.id'
-  - description: Dev Enviroment
+  - description: Development
     url: 'https://id.mediacube.dev'
 paths:
   payments:
@@ -25,7 +25,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction-Create-Response'
+                $ref: '#/components/schemas/TransactionCreateResponse'
               examples:
                 Example:
                   value:
@@ -40,12 +40,36 @@ paths:
         '422':
           description: Неверные данные
       description: Создание транзакции
-      parameters: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          required: true
+          name: Content-Type
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+        - schema:
+            type: string
+            example: XMLHttpRequest
+          in: header
+          name: X-Requested-With
+          required: true
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Transaction-Create'
+              $ref: '#/components/schemas/TransactionCreateRequest'
             examples: {}
           application/xml:
             schema:
@@ -79,7 +103,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction-Status-Response'
+                $ref: '#/components/schemas/TransactionCreateResponse'
         '401':
           description: Unauthorized
         '403':
@@ -91,11 +115,112 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Tarnsaction-Status'
+              $ref: '#/components/schemas/TransactionStatusRequest'
+            examples: {}
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              properties: {}
+        description: ''
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: ''
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          description: ''
+          required: true
+        - schema:
+            type: string
+            example: XMLHttpRequest
+          in: header
+          name: X-Requested-With
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
     parameters: []
+  /oauth/token:
+    post:
+      summary: Аутентификация
+      operationId: post-oauth-token
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token_type:
+                    type: string
+                  expires_in:
+                    type: string
+                  access_token:
+                    type: string
+                required:
+                  - token_type
+                  - expires_in
+                  - access_token
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+                  error_message:
+                    type: string
+                required:
+                  - error
+                  - error_description
+                  - error_message
+      parameters:
+        - schema:
+            type: string
+          in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+                grant_type:
+                  type: string
+                  description: partner
+              required:
+                - client_id
+                - client_secret
+                - grant_type
+      description: Получение доступа
+      tags:
+        - Auth
+        - Payments
 components:
   schemas:
-    Transaction-Create-Response:
+    TransactionCreateResponse:
       title: Схема создания транзакций (ответ)
       type: object
       properties:
@@ -114,13 +239,20 @@ components:
             request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
             status: 2
             err_msg: null
-    Transaction-Create:
+        example-2:
+          data:
+            request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
+            status: 3
+            err_msg: 3000
+      description: ''
+    TransactionCreateRequest:
       title: Схема создания транзакций
       type: object
       x-examples: {}
       properties:
         identify:
           type: string
+          description: Для получение Identify Key обратитесь в поддержку
         purpose:
           type: integer
           enum:
@@ -146,7 +278,7 @@ components:
                 minLength: 16
                 maxLength: 16
               amount:
-                type: number
+                type: string
               description:
                 type: string
                 description: сообщение о приходе средств. Будет отображено во вкладке _Транзакции_ в Mediacube.ID
@@ -160,8 +292,9 @@ components:
         - request_id
         - description
         - data
-    Tarnsaction-Status:
-      title: Tarnsaction-Status
+      description: ''
+    TransactionStatusRequest:
+      title: TarnsactionStatusRequest
       type: object
       properties:
         identify:
@@ -174,24 +307,11 @@ components:
       required:
         - identify
         - request_id
-    Transaction-Status-Response:
-      title: Transaction-Status-Response
-      type: object
       x-examples:
-        Ezample:
-          data:
-            request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
-            status: 2
-      properties:
-        data:
-          type: object
-          properties:
-            request_id:
-              type: string
-            status:
-              type: string
-      required:
-        - data
+        example: {}
+      description: ''
   securitySchemes: {}
 tags:
   - name: Payments
+  - name: Auth
+security: []
