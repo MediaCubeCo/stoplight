@@ -197,6 +197,7 @@ paths:
         - schema:
             type: string
           in: header
+          required: true
       requestBody:
         content:
           application/json:
@@ -218,6 +219,278 @@ paths:
       tags:
         - Auth
         - Payments
+  /oauth/user/channels:
+    get:
+      summary: '[OAuth] Scope User Channels'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    youtube_id:
+                      type: string
+                    title:
+                      type: string
+                    published_at:
+                      type: string
+                    views_count:
+                      type: number
+                    comments_count:
+                      type: number
+                    subscribers_count:
+                      type: number
+                    videos_count:
+                      type: number
+                    gender:
+                      type: boolean
+                    is_channel_owner:
+                      type: boolean
+                    connect_request_status:
+                      type:
+                        - 'null'
+                        - integer
+                  required:
+                    - id
+                    - youtube_id
+                    - title
+                    - published_at
+                    - views_count
+                    - comments_count
+                    - subscribers_count
+                    - videos_count
+                    - gender
+                    - is_channel_owner
+                    - connect_request_status
+      operationId: get-oauth-user-channels
+      description: 'scope name: user.channels'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authroization
+          description: 'Bearer token, который был выдан после авторизации /oauth/token'
+          required: true
+  /oauth/user:
+    get:
+      summary: '[OAuth] User'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                  email:
+                    type: string
+                  first_name:
+                    type: string
+                  last_name:
+                    type: string
+                  lang:
+                    type: string
+                  wallet:
+                    type: string
+                  sub_user:
+                    required:
+                      - id
+                      - email
+                      - first_name
+                      - last_name
+                      - lang
+                      - wallet
+                      - country
+                    type:
+                      - object
+                      - 'null'
+                    properties:
+                      id:
+                        type: number
+                      email:
+                        type: string
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      lang:
+                        type: string
+                      wallet:
+                        type: string
+                      country:
+                        $ref: '#/components/schemas/Country'
+                  channels:
+                    type: array
+                    items:
+                      type: string
+                  country:
+                    $ref: '#/components/schemas/Country'
+                required:
+                  - id
+                  - email
+                  - first_name
+                  - last_name
+                  - lang
+                  - wallet
+                  - sub_user
+                  - channels
+                  - country
+      operationId: get-oauth-user
+      description: Получение информации о пользвателе по токену
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: |
+            Bearer token, который был выдан после авторизации /oauth/token
+          required: true
+  /oauth/user/common:
+    get:
+      summary: '[OAuth] Scope User Common'
+      tags: []
+      responses: {}
+      operationId: get-oauth-user-common
+      description: 'scope name: user.common'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                lang:
+                  type: string
+                is_confirmed:
+                  type: boolean
+                avatar:
+                  type: string
+                wallet:
+                  type: string
+                profile:
+                  $ref: '#/components/schemas/Profile'
+                birthday:
+                  type: string
+                sex:
+                  type: boolean
+                country_id:
+                  type: number
+                country:
+                  $ref: '#/components/schemas/Country'
+                sub_user:
+                  type:
+                    - object
+                    - 'null'
+                  required:
+                    - name
+                    - email
+                    - lang
+                    - is_confirmed
+                    - avatar
+                    - wallet
+                    - profile
+                    - birthday
+                    - sex
+                    - country_id
+                    - country
+                  properties:
+                    name:
+                      type: string
+                    email:
+                      type: string
+                    lang:
+                      type: string
+                    is_confirmed:
+                      type: boolean
+                    avatar:
+                      type: string
+                    wallet:
+                      type: string
+                    profile:
+                      $ref: '#/components/schemas/Profile'
+                    birthday:
+                      type: string
+                    sex:
+                      type: string
+                    country_id:
+                      type: number
+                    country:
+                      $ref: '#/components/schemas/Country'
+              required:
+                - name
+                - email
+                - lang
+                - is_confirmed
+                - avatar
+                - wallet
+                - profile
+                - birthday
+                - sex
+                - country_id
+                - country
+                - sub_user
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+          description: |
+            Bearer token, который был выдан после авторизации /oauth/token
+  /oauth/user/contacts:
+    get:
+      summary: '[OAuth] Scope User Contacts'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contacts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contact'
+                  sub_user:
+                    type:
+                      - object
+                      - 'null'
+                    required:
+                      - contracts
+                    properties:
+                      contracts:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Contact'
+                required:
+                  - contacts
+                  - sub_user
+      operationId: get-oauth-user-contacts
+      description: 'scope name: user.contacts'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+          description: |
+            Bearer token, который был выдан после авторизации /oauth/token
 components:
   schemas:
     TransactionCreateResponse:
@@ -310,6 +583,111 @@ components:
       x-examples:
         example: {}
       description: ''
+    Country:
+      title: Country
+      type: object
+      description: ''
+      properties:
+        id:
+          type: number
+        youtube_id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        order:
+          type:
+            - number
+            - 'null'
+        flag:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - youtube_id
+        - code
+        - name
+        - order
+        - flag
+        - created_at
+        - updated_at
+    Profile:
+      title: Profile
+      type: object
+      properties:
+        id:
+          type: number
+        user_id:
+          type: number
+        first_name:
+          type: string
+        last_name:
+          type: string
+        name:
+          type: string
+        region:
+          type:
+            - string
+            - 'null'
+        city:
+          type:
+            - string
+            - 'null'
+        address:
+          type:
+            - string
+            - 'null'
+        lang:
+          type: string
+        tax_id:
+          type:
+            - string
+            - 'null'
+        business_id:
+          type:
+            - string
+            - 'null'
+        is_real_address:
+          type: boolean
+        province:
+          type:
+            - string
+            - 'null'
+      required:
+        - id
+        - user_id
+        - first_name
+        - last_name
+        - name
+        - region
+        - city
+        - address
+        - lang
+        - tax_id
+        - business_id
+        - is_real_address
+        - province
+    Contact:
+      title: Contact
+      type: object
+      properties:
+        id:
+          type: number
+        user_id:
+          type: number
+        network:
+          type: string
+        link:
+          type: string
+      required:
+        - id
+        - user_id
+        - network
+        - link
   securitySchemes: {}
 tags:
   - name: Payments
