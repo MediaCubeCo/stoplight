@@ -384,89 +384,90 @@ paths:
       tags:
         - OAuth Scopes
         - Auth
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  lang:
+                    type: string
+                  is_confirmed:
+                    type: boolean
+                  avatar:
+                    type: string
+                  wallet:
+                    type: string
+                  profile:
+                    $ref: '#/components/schemas/Profile'
+                  birthday:
+                    type: string
+                  sex:
+                    type: boolean
+                  country_id:
+                    type: number
+                  country:
+                    $ref: '#/components/schemas/Country'
+                  sub_user:
+                    type:
+                      - object
+                      - 'null'
+                    required:
+                      - name
+                      - email
+                      - lang
+                      - is_confirmed
+                      - avatar
+                      - wallet
+                      - profile
+                      - birthday
+                      - sex
+                      - country_id
+                      - country
+                    properties:
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      lang:
+                        type: string
+                      is_confirmed:
+                        type: boolean
+                      avatar:
+                        type: string
+                      wallet:
+                        type: string
+                      profile:
+                        $ref: '#/components/schemas/Profile'
+                      birthday:
+                        type: string
+                      sex:
+                        type: string
+                      country_id:
+                        type: number
+                      country:
+                        $ref: '#/components/schemas/Country'
+                required:
+                  - name
+                  - email
+                  - lang
+                  - is_confirmed
+                  - avatar
+                  - wallet
+                  - profile
+                  - birthday
+                  - sex
+                  - country_id
+                  - country
+                  - sub_user
       operationId: get-oauth-user-common
       description: 'scope name: user.common'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                lang:
-                  type: string
-                is_confirmed:
-                  type: boolean
-                avatar:
-                  type: string
-                wallet:
-                  type: string
-                profile:
-                  $ref: '#/components/schemas/Profile'
-                birthday:
-                  type: string
-                sex:
-                  type: boolean
-                country_id:
-                  type: number
-                country:
-                  $ref: '#/components/schemas/Country'
-                sub_user:
-                  type:
-                    - object
-                    - 'null'
-                  required:
-                    - name
-                    - email
-                    - lang
-                    - is_confirmed
-                    - avatar
-                    - wallet
-                    - profile
-                    - birthday
-                    - sex
-                    - country_id
-                    - country
-                  properties:
-                    name:
-                      type: string
-                    email:
-                      type: string
-                    lang:
-                      type: string
-                    is_confirmed:
-                      type: boolean
-                    avatar:
-                      type: string
-                    wallet:
-                      type: string
-                    profile:
-                      $ref: '#/components/schemas/Profile'
-                    birthday:
-                      type: string
-                    sex:
-                      type: string
-                    country_id:
-                      type: number
-                    country:
-                      $ref: '#/components/schemas/Country'
-              required:
-                - name
-                - email
-                - lang
-                - is_confirmed
-                - avatar
-                - wallet
-                - profile
-                - birthday
-                - sex
-                - country_id
-                - country
-                - sub_user
       parameters:
         - schema:
             type: string
