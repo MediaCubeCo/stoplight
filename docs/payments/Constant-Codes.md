@@ -19,7 +19,7 @@ tags: [Payments]
 4000 - ERROR_CODE_APPLICATION_EXCEPTION    
 ```
 
-# Error Message Codes
+# Pament purpose Codes
 
 ```json
 1 - PURPOSE_LICENSE_FEE
