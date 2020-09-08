@@ -43,7 +43,7 @@ paths:
       parameters:
         - schema:
             type: string
-            example: Bearer <jwt-token>
+            example: 'Bearer <jwt-token>'
           in: header
           name: Authorization
           required: true
@@ -129,7 +129,7 @@ paths:
       parameters:
         - schema:
             type: string
-            example: Bearer <jwt-token>
+            example: 'Bearer <jwt-token>'
           in: header
           name: Authorization
           description: ''
@@ -549,6 +549,7 @@ components:
       title: Схема создания транзакций
       type: object
       x-examples: {}
+      description: ''
       properties:
         identify:
           type: string
@@ -582,6 +583,10 @@ components:
               description:
                 type: string
                 description: сообщение о приходе средств. Будет отображено во вкладке _Транзакции_ в Mediacube.ID
+              uuid:
+                type: string
+                format: uuid
+                description: 'Идентификатор транзакции, используйте его для пакетной передачи транзакций.'
             required:
               - wallet
               - amount
@@ -592,7 +597,6 @@ components:
         - request_id
         - description
         - data
-      description: ''
     TransactionStatusRequest:
       title: TarnsactionStatusRequest
       type: object
