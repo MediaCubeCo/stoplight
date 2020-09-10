@@ -529,6 +529,10 @@ components:
               type: string
             err_msg:
               type: string
+            uuid:
+              type: string
+              format: uuid
+              description: 'Идентификатор транзакции, используйте его для пакетной передачи транзакций.'
       x-examples:
         Example:
           data:
