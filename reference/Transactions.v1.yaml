@@ -43,7 +43,7 @@ paths:
       parameters:
         - schema:
             type: string
-            example: 'Bearer <jwt-token>'
+            example: Bearer <jwt-token>
           in: header
           name: Authorization
           required: true
@@ -129,7 +129,7 @@ paths:
       parameters:
         - schema:
             type: string
-            example: 'Bearer <jwt-token>'
+            example: Bearer <jwt-token>
           in: header
           name: Authorization
           description: ''
@@ -230,7 +230,7 @@ paths:
                   client_secret: secret
                   scopes: '*'
         description: ''
-      description: Получение доступа
+      description: Gaining access
       tags:
         - Auth
         - Payments
