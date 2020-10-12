@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Ezzy Pay
   version: '1.0'
-  description: платёжное API для совершения массовых транзакций между сторонними приложениями и MediaCube.ID
+  description: Payment API for making bulk transactions between third-party applications and Ezzy
   contact:
     name: Egor
     email: en@mediacube.network
@@ -17,7 +17,7 @@ servers:
 paths:
   /payments:
     post:
-      summary: Создание транзакций
+      summary: Transaction creation
       operationId: post-payments
       responses:
         '201':
@@ -34,12 +34,12 @@ paths:
                       status: 2
                       err_msg: null
         '401':
-          description: У вашего Access Token нет доступа
+          description: Your Access Token does not have access
         '403':
-          description: У вашего Identify Key не хватает прав на совершение операции
+          description: Your Identify Key does not have enough rights to perform the operation
         '422':
-          description: Неверные данные
-      description: Создание транзакции
+          description: Incorrect data
+      description: Transaction creation
       parameters:
         - schema:
             type: string
@@ -95,7 +95,7 @@ paths:
       tags:
         - Payments
     get:
-      summary: Получение статуса транзакций
+      summary: Getting transaction status
       operationId: get-payments
       responses:
         '200':
@@ -108,7 +108,7 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
-      description: Статус транзакции
+      description: Transaction status
       tags:
         - Payments
       requestBody:
@@ -156,7 +156,7 @@ paths:
     parameters: []
   /oauth/token:
     post:
-      summary: Аутентификация
+      summary: Authentication
       operationId: post-oauth-token
       responses:
         '200':
@@ -206,12 +206,11 @@ paths:
                   type: string
                 grant_type:
                   type: string
-                  description: для payments api используйте partner
+                  description: for the payments api use partner
                 scopes:
                   type: string
                   description: |-
-                    * - все доступные скоупы
-                    "user.channels, user.common" - конкретные
+                    * - all available scopes "user.channels, user. common" are specific
               required:
                 - client_id
                 - client_secret
@@ -294,7 +293,7 @@ paths:
             type: string
           in: header
           name: Authroization
-          description: 'Bearer token, который был выдан после авторизации /oauth/token'
+          description: 'Bearer token that was issued after authorization /oauth/token'
           required: true
   /oauth/user:
     get:
@@ -365,14 +364,14 @@ paths:
                   - channels
                   - country
       operationId: get-oauth-user
-      description: Получение информации о пользвателе по токену
+      description: Getting information about the user by the token
       parameters:
         - schema:
             type: string
           in: header
           name: Authorization
           description: |
-            Bearer token, который был выдан после авторизации /oauth/token
+            Bearer token that was issued after authorization /oauth/token
           required: true
   /oauth/user/common:
     get:
@@ -471,7 +470,7 @@ paths:
           name: Authorization
           required: true
           description: |
-            Bearer token, который был выдан после авторизации /oauth/token
+            Bearer token that was issued after authorization /oauth/token
   /oauth/user/contacts:
     get:
       summary: '[OAuth] Scope User Contacts'
@@ -513,11 +512,11 @@ paths:
           name: Authorization
           required: true
           description: |
-            Bearer token, который был выдан после авторизации /oauth/token
+            Bearer token that was issued after authorization /oauth/token
 components:
   schemas:
     TransactionCreateResponse:
-      title: Схема создания транзакций (ответ)
+      title: Transaction creation scheme (response)
       type: object
       properties:
         data:
@@ -532,7 +531,7 @@ components:
             uuid:
               type: string
               format: uuid
-              description: 'Идентификатор транзакции, используйте его для пакетной передачи транзакций.'
+              description: 'Transaction ID, use it for batch transfer of transactions.'
       x-examples:
         Example:
           data:
@@ -546,14 +545,14 @@ components:
             err_msg: 3000
       description: ''
     TransactionCreateRequest:
-      title: Схема создания транзакций
+      title: Transaction creation scheme
       type: object
       x-examples: {}
       description: ''
       properties:
         identify:
           type: string
-          description: Для получение Identify Key обратитесь в поддержку
+          description: To get an Identify Key, contact our support.
         purpose:
           type: integer
           enum:
@@ -564,10 +563,10 @@ components:
           type: string
           minLength: 16
           maxLength: 255
-          description: случайно сгенерированная уникальная строка
+          description: randomly generated unique line
         description:
           type: string
-          description: сообщение о снятии средств с вашего счета Ezzy. Будет отображено во вкладке _Транзакции_ в Mediacube.ID
+          description: message of withdrawal of funds from your Ezzy account. Will be displayed in the  _Transactions_ tab in Ezzy
         data:
           type: array
           items:
@@ -575,18 +574,18 @@ components:
             properties:
               wallet:
                 type: string
-                description: существующий номер кошелька пользователя системы MediaCube
+                description: existing wallet number of the Ezzy system user
                 minLength: 16
                 maxLength: 16
               amount:
                 type: string
               description:
                 type: string
-                description: сообщение о приходе средств. Будет отображено во вкладке _Транзакции_ в Mediacube.ID
+                description: message about the funds receipt. Will be displayed in the _Transactions_ tab in Ezzy
               uuid:
                 type: string
                 format: uuid
-                description: 'Идентификатор транзакции, используйте его для пакетной передачи транзакций.'
+                description: 'Transaction ID, use it for batch transfer of transactions.'
             required:
               - wallet
               - amount
