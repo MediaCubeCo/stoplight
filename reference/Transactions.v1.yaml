@@ -37,7 +37,7 @@ paths:
                   - token_type
                   - expires_in
                   - access_token
-        '401': 
+        '401':
           description: Unauthorized
           content:
             application/json:
@@ -93,67 +93,6 @@ paths:
       tags:
         - Auth
         - Payments
-  /oauth/user/channels:
-    get:
-      summary: '[OAuth] Scope User Channels'
-      tags:
-        - OAuth Scopes
-        - Auth
-      responses:
-        '200':
-          description: OK
-          headers: {}
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: number
-                    youtube_id:
-                      type: string
-                    title:
-                      type: string
-                    published_at:
-                      type: string
-                    views_count:
-                      type: number
-                    comments_count:
-                      type: number
-                    subscribers_count:
-                      type: number
-                    videos_count:
-                      type: number
-                    gender:
-                      type: boolean
-                    is_channel_owner:
-                      type: boolean
-                    connect_request_status:
-                      type:
-                        - integer
-                        - 'null'
-                  required:
-                    - id
-                    - youtube_id
-                    - title
-                    - published_at
-                    - views_count
-                    - comments_count
-                    - subscribers_count
-                    - videos_count
-                    - gender
-                    - is_channel_owner
-      operationId: get-oauth-user-channels
-      description: 'scope name: user.channels'
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authroization
-          description: Bearer token that was issued after authorization /oauth/token
-          required: true
   /oauth/user:
     get:
       summary: '[OAuth] User'
@@ -188,9 +127,7 @@ paths:
                       - lang
                       - wallet
                       - country
-                    type:
-                      - object
-                      - 'null'
+                    type: object
                     properties:
                       id:
                         type: number
@@ -231,6 +168,65 @@ paths:
           name: Authorization
           description: |
             Bearer token that was issued after authorization /oauth/token
+          required: true
+  /oauth/user/channels:
+    get:
+      summary: '[OAuth] Scope User Channels'
+      tags:
+        - OAuth Scopes
+        - Auth
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    youtube_id:
+                      type: string
+                    title:
+                      type: string
+                    published_at:
+                      type: string
+                    views_count:
+                      type: number
+                    comments_count:
+                      type: number
+                    subscribers_count:
+                      type: number
+                    videos_count:
+                      type: number
+                    gender:
+                      type: boolean
+                    is_channel_owner:
+                      type: boolean
+                    connect_request_status: 
+                      type: integer
+                  required:
+                    - id
+                    - youtube_id
+                    - title
+                    - published_at
+                    - views_count
+                    - comments_count
+                    - subscribers_count
+                    - videos_count
+                    - gender
+                    - is_channel_owner
+      operationId: get-oauth-user-channels
+      description: 'scope name: user.channels'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authroization
+          description: Bearer token that was issued after authorization /oauth/token
           required: true
   /oauth/user/common:
     get:
@@ -389,7 +385,7 @@ paths:
                     data:
                       request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
                       status: '2'
-                      err_msg: null
+                      err_msg: 'null'
         '401':
           description: Your Access Token does not have access
         '403':
@@ -625,9 +621,7 @@ components:
         name:
           type: string
         order:
-          type:
-            - number
-            - 'null'
+          type: number
         flag:
           type: string
         created_at:
@@ -658,9 +652,7 @@ components:
         name:
           type: string
         region:
-          type:
-            - string
-            - 'null'
+          type: string
         city:
           type:
             - string
