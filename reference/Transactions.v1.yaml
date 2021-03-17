@@ -10,8 +10,6 @@ info:
 servers:
   - url: 'https://ezzy.co'
     description: Production
-  - description: Production (Legacy)
-    url: 'https://mediacube.id'
   - description: Development
     url: 'https://id.mediacube.dev'
 paths:
@@ -29,6 +27,8 @@ paths:
                 properties:
                   token_type:
                     type: string
+                    enum:
+                      - bearer
                   expires_in:
                     type: string
                   access_token:
@@ -71,24 +71,32 @@ paths:
                 scopes:
                   type: string
                   description: '* - Все доступные скоупы определены в ../docs/Documents/User-Scopes.md'
+                code:
+                  type: string
+                redirect_url:
+                  type: string
+                  format: uri
               required:
                 - grant_type
                 - client_id
                 - client_secret
             examples:
-              example:
+              partner:
                 value:
                   grant_type: partner
+                  client_id: '1'
+                  client_secret: secret
+              authorization_code:
+                value:
+                  grant_type: authorization
                   client_id: '1'
                   client_secret: secret
                   scopes: user.channels user.common user.contacts
-              example-2:
-                value:
-                  grant_type: partner
-                  client_id: '1'
-                  client_secret: secret
-                  scopes: '*'
-        description: ''
+                  code: hjgsfugdskhgvklundfluvhdfnlvhls
+                  redirect_url: 'https://yourapp.com/endpoint'
+        description: |-
+          Если используется гранд_тайп = партнер не ипрользются скоупы код и редирект урл
+          если испольуется аусентификейшен_код то код и редирект юрл обязательны
       description: Gaining access
       tags:
         - Auth
@@ -168,6 +176,8 @@ paths:
           required: true
       tags:
         - User
+      security:
+        - User Authorization: []
   /oauth/user/channels:
     get:
       summary: '[OAuth] Scope User Channels'
@@ -226,6 +236,9 @@ paths:
           required: true
       tags:
         - User
+      security:
+        - User Authorization:
+            - user.channels
   /oauth/user/common:
     get:
       summary: '[OAuth] Scope User Common'
@@ -323,6 +336,9 @@ paths:
             Bearer token that was issued after authorization /oauth/token
       tags:
         - User
+      security:
+        - User Authorization:
+            - user.common
   /oauth/user/contacts:
     get:
       summary: '[OAuth] Scope User Contacts'
@@ -364,6 +380,9 @@ paths:
             Bearer token that was issued after authorization /oauth/token
       tags:
         - User
+      security:
+        - User Authorization:
+            - user.contacts
   /payments:
     post:
       summary: Transaction creation
@@ -502,7 +521,16 @@ paths:
           in: header
           name: Accept
           required: true
+      security:
+        - bearer token: []
+          Idetntify Key: []
     parameters: []
+  /oauth/user/balance:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-oauth-user-balance
 components:
   schemas:
     TransactionCreateResponse:
@@ -704,7 +732,27 @@ components:
         - user_id
         - network
         - link
-  securitySchemes: {}
+  securitySchemes:
+    User Authorization:
+      type: oauth2
+      flows:
+        authorizationCode:
+          tokenUrl: /oauth/token
+          scopes:
+            user.common: ''
+            user.channels: ''
+            user.contacts: ''
+          authorizationUrl: /oauth/authorize
+    bearer token:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://ezzy.co/oauth/token'
+          scopes: {}
+    Idetntify Key:
+      name: identify
+      type: apiKey
+      in: query
 tags:
   - name: Auth
   - name: User
