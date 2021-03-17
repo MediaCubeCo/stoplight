@@ -15,145 +15,6 @@ servers:
   - description: Development
     url: 'https://id.mediacube.dev'
 paths:
-  /payments:
-    post:
-      summary: Transaction creation
-      operationId: post-payments
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionCreateResponse'
-              examples:
-                Example:
-                  value:
-                    data:
-                      request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
-                      status: 2
-                      err_msg: null
-        '401':
-          description: Your Access Token does not have access
-        '403':
-          description: Your Identify Key does not have enough rights to perform the operation
-        '422':
-          description: Incorrect data
-      description: Transaction creation
-      parameters:
-        - schema:
-            type: string
-            example: Bearer <jwt-token>
-          in: header
-          name: Authorization
-          required: true
-        - schema:
-            type: string
-            example: application/json
-          in: header
-          required: true
-          name: Content-Type
-        - schema:
-            type: string
-            example: application/json
-          in: header
-          name: Accept
-          required: true
-        - schema:
-            type: string
-            example: XMLHttpRequest
-          in: header
-          name: X-Requested-With
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TransactionCreateRequest'
-            examples: {}
-          application/xml:
-            schema:
-              type: object
-              properties: {}
-          multipart/form-data:
-            schema:
-              type: object
-              properties: {}
-          text/html:
-            schema:
-              type: object
-              properties: {}
-          text/plain:
-            schema:
-              type: object
-              properties: {}
-          application/EDI-X12:
-            schema:
-              type: object
-              properties: {}
-        description: ''
-      tags:
-        - Payments
-    get:
-      summary: Getting transaction status
-      operationId: get-payments
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionCreateResponse'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-      description: Transaction status
-      tags:
-        - Payments
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TransactionStatusRequest'
-            examples: {}
-          application/xml:
-            schema:
-              type: object
-              properties: {}
-          multipart/form-data:
-            schema:
-              type: object
-              properties: {}
-        description: ''
-      parameters:
-        - schema:
-            type: string
-            example: Bearer <jwt-token>
-          in: header
-          name: Authorization
-          description: ''
-          required: true
-        - schema:
-            type: string
-            example: application/json
-          in: header
-          name: Content-Type
-          description: ''
-          required: true
-        - schema:
-            type: string
-            example: XMLHttpRequest
-          in: header
-          name: X-Requested-With
-          required: true
-        - schema:
-            type: string
-            example: application/json
-          in: header
-          name: Accept
-          required: true
-    parameters: []
   /oauth/token:
     post:
       summary: Authentication
@@ -209,8 +70,7 @@ paths:
                   description: for the payments api use partner
                 scopes:
                   type: string
-                  description: |-
-                    * - all available scopes "user.channels, user. common" are specific
+                  description: '* - all available scopes "user.channels, user. common" are specific'
               required:
                 - client_id
                 - client_secret
@@ -219,13 +79,13 @@ paths:
               example:
                 value:
                   grant_type: partner
-                  client_id: 1
+                  client_id: '1'
                   client_secret: secret
                   scopes: user.channels user.common user.contacts
               example-2:
                 value:
                   grant_type: partner
-                  client_id: 1
+                  client_id: '1'
                   client_secret: secret
                   scopes: '*'
         description: ''
@@ -272,8 +132,8 @@ paths:
                       type: boolean
                     connect_request_status:
                       type:
-                        - 'null'
                         - integer
+                        - 'null'
                   required:
                     - id
                     - youtube_id
@@ -285,7 +145,6 @@ paths:
                     - videos_count
                     - gender
                     - is_channel_owner
-                    - connect_request_status
       operationId: get-oauth-user-channels
       description: 'scope name: user.channels'
       parameters:
@@ -293,7 +152,7 @@ paths:
             type: string
           in: header
           name: Authroization
-          description: 'Bearer token that was issued after authorization /oauth/token'
+          description: Bearer token that was issued after authorization /oauth/token
           required: true
   /oauth/user:
     get:
@@ -513,6 +372,145 @@ paths:
           required: true
           description: |
             Bearer token that was issued after authorization /oauth/token
+  /payments:
+    post:
+      summary: Transaction creation
+      operationId: post-payments
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionCreateResponse'
+              examples:
+                Example:
+                  value:
+                    data:
+                      request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
+                      status: '2'
+                      err_msg: null
+        '401':
+          description: Your Access Token does not have access
+        '403':
+          description: Your Identify Key does not have enough rights to perform the operation
+        '422':
+          description: Incorrect data
+      description: Transaction creation
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          required: true
+          name: Content-Type
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+        - schema:
+            type: string
+            example: XMLHttpRequest
+          in: header
+          name: X-Requested-With
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionCreateRequest'
+            examples: {}
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              properties: {}
+          text/html:
+            schema:
+              type: object
+              properties: {}
+          text/plain:
+            schema:
+              type: object
+              properties: {}
+          application/EDI-X12:
+            schema:
+              type: object
+              properties: {}
+        description: ''
+      tags:
+        - Payments
+    get:
+      summary: Getting transaction status
+      operationId: get-payments
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionCreateResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      description: Transaction status
+      tags:
+        - Payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionStatusRequest'
+            examples: {}
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              properties: {}
+        description: ''
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: ''
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          description: ''
+          required: true
+        - schema:
+            type: string
+            example: XMLHttpRequest
+          in: header
+          name: X-Requested-With
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+    parameters: []
 components:
   schemas:
     TransactionCreateResponse:
@@ -552,7 +550,7 @@ components:
       properties:
         identify:
           type: string
-          description: To get an Identify Key, contact our support.
+          description: 'To get an Identify Key, contact our support.'
         purpose:
           type: integer
           enum:
