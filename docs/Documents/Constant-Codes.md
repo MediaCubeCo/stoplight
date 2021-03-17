@@ -25,3 +25,10 @@ tags: [Payments]
 1 - PURPOSE_LICENSE_FEE
 2 - PURPOSE_ADVERTISING_PAYMENT 
 ```
+
+
+# Grant type
+```json
+authotization_code - 
+partner - 
+```

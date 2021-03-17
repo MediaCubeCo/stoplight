@@ -61,20 +61,20 @@ paths:
             schema:
               type: object
               properties:
+                grant_type:
+                  type: string
+                  description: authorization types. see description in Constant-Codes.md
                 client_id:
                   type: string
                 client_secret:
                   type: string
-                grant_type:
-                  type: string
-                  description: for the payments api use partner
                 scopes:
                   type: string
                   description: '* - Все доступные скоупы определены в ../docs/Documents/User-Scopes.md'
               required:
+                - grant_type
                 - client_id
                 - client_secret
-                - grant_type
             examples:
               example:
                 value:
