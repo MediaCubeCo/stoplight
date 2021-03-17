@@ -70,7 +70,7 @@ paths:
                   description: for the payments api use partner
                 scopes:
                   type: string
-                  description: '* - all available scopes "user.channels, user. common" are specific'
+                  description: '* - Все доступные скоупы определены в ../docs/Documents/User-Scopes.md'
               required:
                 - client_id
                 - client_secret
