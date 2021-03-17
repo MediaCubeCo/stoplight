@@ -718,7 +718,7 @@ components:
         - link
   securitySchemes: {}
 tags:
-  - name: Payments
   - name: Auth
+  - name: Payments
   - name: OAuth Scopes
 security: []
