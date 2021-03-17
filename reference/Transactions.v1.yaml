@@ -37,7 +37,7 @@ paths:
                   - token_type
                   - expires_in
                   - access_token
-        '401':
+        '401': 
           description: Unauthorized
           content:
             application/json:
