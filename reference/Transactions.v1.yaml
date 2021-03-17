@@ -92,12 +92,9 @@ paths:
       description: Gaining access
       tags:
         - Auth
-        - Payments
   /oauth/user:
     get:
       summary: '[OAuth] User'
-      tags:
-        - Auth
       responses:
         '200':
           description: OK
@@ -169,12 +166,11 @@ paths:
           description: |
             Bearer token that was issued after authorization /oauth/token
           required: true
+      tags:
+        - User
   /oauth/user/channels:
     get:
       summary: '[OAuth] Scope User Channels'
-      tags:
-        - OAuth Scopes
-        - Auth
       responses:
         '200':
           description: OK
@@ -206,7 +202,7 @@ paths:
                       type: boolean
                     is_channel_owner:
                       type: boolean
-                    connect_request_status: 
+                    connect_request_status:
                       type: integer
                   required:
                     - id
@@ -228,12 +224,11 @@ paths:
           name: Authroization
           description: Bearer token that was issued after authorization /oauth/token
           required: true
+      tags:
+        - User
   /oauth/user/common:
     get:
       summary: '[OAuth] Scope User Common'
-      tags:
-        - OAuth Scopes
-        - Auth
       responses:
         '200':
           description: OK
@@ -326,12 +321,11 @@ paths:
           required: true
           description: |
             Bearer token that was issued after authorization /oauth/token
+      tags:
+        - User
   /oauth/user/contacts:
     get:
       summary: '[OAuth] Scope User Contacts'
-      tags:
-        - OAuth Scopes
-        - Auth
       responses:
         '200':
           description: OK
@@ -368,6 +362,8 @@ paths:
           required: true
           description: |
             Bearer token that was issued after authorization /oauth/token
+      tags:
+        - User
   /payments:
     post:
       summary: Transaction creation
@@ -711,6 +707,6 @@ components:
   securitySchemes: {}
 tags:
   - name: Auth
+  - name: User
   - name: Payments
-  - name: OAuth Scopes
 security: []
