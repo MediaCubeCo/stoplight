@@ -514,7 +514,7 @@ paths:
           name: Accept
           required: true
       security:
-        - bearer token: []
+        - Bearer Token: []
           Idetntify Key: []
     parameters: []
   /oauth/user/balance:
@@ -719,13 +719,13 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          tokenUrl: /oauth/token
+          tokenUrl: 'https://ezzy.co/oauth/token'
           scopes:
             user.common: ''
             user.channels: ''
             user.contacts: ''
-          authorizationUrl: /oauth/authorize
-    bearer token:
+          authorizationUrl: 'https://ezzy.co/oauth/authorize'
+    Bearer Token:
       type: oauth2
       flows:
         clientCredentials:
