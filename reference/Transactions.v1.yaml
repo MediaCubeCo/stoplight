@@ -10,8 +10,6 @@ info:
 servers:
   - url: 'https://ezzy.co'
     description: Production
-  - description: Production (Legacy)
-    url: 'https://mediacube.id'
   - description: Development
     url: 'https://id.mediacube.dev'
 paths:
@@ -29,6 +27,8 @@ paths:
                 properties:
                   token_type:
                     type: string
+                    enum:
+                      - bearer
                   expires_in:
                     type: string
                   access_token:
@@ -61,34 +61,42 @@ paths:
             schema:
               type: object
               properties:
+                grant_type:
+                  type: string
+                  description: authorization types. see description in Constant-Codes.md
                 client_id:
                   type: string
                 client_secret:
                   type: string
-                grant_type:
-                  type: string
-                  description: for the payments api use partner
                 scopes:
                   type: string
-                  description: '* - all available scopes "user.channels, user. common" are specific'
+                  description: '* - Все доступные скоупы определены в ../docs/Documents/User-Scopes.md'
+                code:
+                  type: string
+                redirect_url:
+                  type: string
+                  format: uri
               required:
+                - grant_type
                 - client_id
                 - client_secret
-                - grant_type
             examples:
-              example:
+              partner:
                 value:
                   grant_type: partner
+                  client_id: '1'
+                  client_secret: secret
+              authorization_code:
+                value:
+                  grant_type: authorization_code
                   client_id: '1'
                   client_secret: secret
                   scopes: user.channels user.common user.contacts
-              example-2:
-                value:
-                  grant_type: partner
-                  client_id: '1'
-                  client_secret: secret
-                  scopes: '*'
-        description: ''
+                  code: hjgsfugdskhgvklundfluvhdfnlvhls
+                  redirect_url: 'https://yourapp.com/endpoint'
+        description: |-
+          Если используется гранд_тайп = партнер не ипрользются скоупы код и редирект урл
+          если испольуется аусентификейшен_код то код и редирект юрл обязательны
       description: Gaining access
       tags:
         - Auth
@@ -116,6 +124,7 @@ paths:
                   wallet:
                     type: string
                   sub_user:
+                    type: object
                     required:
                       - id
                       - email
@@ -124,7 +133,7 @@ paths:
                       - lang
                       - wallet
                       - country
-                    type: object
+                    description: если нет сабюзера выдает нулл
                     properties:
                       id:
                         type: number
@@ -140,12 +149,17 @@ paths:
                         type: string
                       country:
                         $ref: '#/components/schemas/Country'
-                  channels:
-                    type: array
-                    items:
-                      type: string
                   country:
                     $ref: '#/components/schemas/Country'
+                  kyc_status:
+                    type: integer
+                    enum:
+                      - 1
+                      - 2
+                      - 3
+                  is_confirmed:
+                    type: boolean
+                    description: статус подтверждения почты
                 required:
                   - id
                   - email
@@ -154,20 +168,17 @@ paths:
                   - lang
                   - wallet
                   - sub_user
-                  - channels
                   - country
       operationId: get-oauth-user
-      description: Getting information about the user by the token
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authorization
-          description: |
-            Bearer token that was issued after authorization /oauth/token
-          required: true
+      description: |-
+        Getting information about the user by the token
+
+        если пользователь залогинен как компания то в юзере - возвращается компания а в саб юзере - пользователь
+      parameters: []
       tags:
         - User
+      security:
+        - User Authorization: []
   /oauth/user/channels:
     get:
       summary: '[OAuth] Scope User Channels'
@@ -182,50 +193,35 @@ paths:
                 items:
                   type: object
                   properties:
-                    id:
-                      type: number
                     youtube_id:
                       type: string
                     title:
                       type: string
                     published_at:
                       type: string
+                      format: date
+                      example: '2020-05-12'
                     views_count:
-                      type: number
-                    comments_count:
                       type: number
                     subscribers_count:
                       type: number
                     videos_count:
                       type: number
-                    gender:
-                      type: boolean
-                    is_channel_owner:
-                      type: boolean
-                    connect_request_status:
-                      type: integer
                   required:
-                    - id
                     - youtube_id
                     - title
                     - published_at
                     - views_count
-                    - comments_count
                     - subscribers_count
                     - videos_count
-                    - gender
-                    - is_channel_owner
       operationId: get-oauth-user-channels
       description: 'scope name: user.channels'
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authroization
-          description: Bearer token that was issued after authorization /oauth/token
-          required: true
+      parameters: []
       tags:
         - User
+      security:
+        - User Authorization:
+            - user.channels
   /oauth/user/common:
     get:
       summary: '[OAuth] Scope User Common'
@@ -237,32 +233,75 @@ paths:
               schema:
                 type: object
                 properties:
-                  name:
-                    type: string
-                  email:
-                    type: string
-                  lang:
-                    type: string
-                  is_confirmed:
-                    type: boolean
-                  avatar:
-                    type: string
-                  wallet:
-                    type: string
-                  profile:
-                    $ref: '#/components/schemas/Profile'
-                  birthday:
-                    type: string
-                  sex:
-                    type: boolean
-                  country_id:
-                    type: number
-                  country:
-                    $ref: '#/components/schemas/Country'
-                  sub_user:
-                    type:
-                      - object
-                      - 'null'
+                  common:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: first name + last name
+                      email:
+                        type: string
+                        format: email
+                      lang:
+                        type: string
+                        description: xx - формат языка из исо
+                      is_confirmed:
+                        type: boolean
+                      avatar:
+                        type: string
+                        format: uri
+                      wallet:
+                        type: string
+                      profile:
+                        $ref: '#/components/schemas/Profile'
+                      birthday:
+                        type: string
+                      sex:
+                        type: boolean
+                      country_id:
+                        type: number
+                      country:
+                        $ref: '#/components/schemas/Country'
+                      sub_user:
+                        type: object
+                        properties:
+                          common:
+                            type: object
+                            required:
+                              - name
+                              - email
+                              - lang
+                              - is_confirmed
+                              - avatar
+                              - wallet
+                              - profile
+                              - birthday
+                              - sex
+                              - country_id
+                              - country
+                            properties:
+                              name:
+                                type: string
+                              email:
+                                type: string
+                              lang:
+                                type: string
+                              is_confirmed:
+                                type: boolean
+                              avatar:
+                                type: string
+                              wallet:
+                                type: string
+                              profile:
+                                $ref: '#/components/schemas/Profile'
+                              birthday:
+                                type: string
+                              sex:
+                                type: string
+                              country_id:
+                                type: number
+                              country:
+                                $ref: '#/components/schemas/Country'
                     required:
                       - name
                       - email
@@ -275,54 +314,15 @@ paths:
                       - sex
                       - country_id
                       - country
-                    properties:
-                      name:
-                        type: string
-                      email:
-                        type: string
-                      lang:
-                        type: string
-                      is_confirmed:
-                        type: boolean
-                      avatar:
-                        type: string
-                      wallet:
-                        type: string
-                      profile:
-                        $ref: '#/components/schemas/Profile'
-                      birthday:
-                        type: string
-                      sex:
-                        type: string
-                      country_id:
-                        type: number
-                      country:
-                        $ref: '#/components/schemas/Country'
-                required:
-                  - name
-                  - email
-                  - lang
-                  - is_confirmed
-                  - avatar
-                  - wallet
-                  - profile
-                  - birthday
-                  - sex
-                  - country_id
-                  - country
-                  - sub_user
+                      - sub_user
       operationId: get-oauth-user-common
-      description: 'scope name: user.common'
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authorization
-          required: true
-          description: |
-            Bearer token that was issued after authorization /oauth/token
+      description: Информация о пользователе только на английском
+      parameters: []
       tags:
         - User
+      security:
+        - User Authorization:
+            - user.common
   /oauth/user/contacts:
     get:
       summary: '[OAuth] Scope User Contacts'
@@ -339,9 +339,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Contact'
                   sub_user:
-                    type:
-                      - object
-                      - 'null'
+                    type: object
                     required:
                       - contracts
                     properties:
@@ -354,16 +352,12 @@ paths:
                   - sub_user
       operationId: get-oauth-user-contacts
       description: 'scope name: user.contacts'
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authorization
-          required: true
-          description: |
-            Bearer token that was issued after authorization /oauth/token
+      parameters: []
       tags:
         - User
+      security:
+        - User Authorization:
+            - user.contacts
   /payments:
     post:
       summary: Transaction creation
@@ -449,10 +443,6 @@ paths:
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionCreateResponse'
         '401':
           description: Unauthorized
         '403':
@@ -502,7 +492,33 @@ paths:
           in: header
           name: Accept
           required: true
+      security:
+        - Bearer Token: []
+          Idetntify Key: []
     parameters: []
+  /oauth/user/balance:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: string
+                  real_balance:
+                    type: string
+                  credit_balance:
+                    type: string
+      operationId: get-oauth-user-balance
+      security:
+        - User Authorization:
+            - user.balance
+      description: Получение текущего описания пользователя
 components:
   schemas:
     TransactionCreateResponse:
@@ -647,32 +663,33 @@ components:
           type: string
         name:
           type: string
+          description: first_name last_name
         region:
           type: string
         city:
-          type:
-            - string
-            - 'null'
+          type: string
         address:
-          type:
-            - string
-            - 'null'
+          type: string
         lang:
           type: string
         tax_id:
-          type:
-            - string
-            - 'null'
+          type: string
         business_id:
-          type:
-            - string
-            - 'null'
+          type: string
         is_real_address:
           type: boolean
         province:
-          type:
-            - string
-            - 'null'
+          type: string
+        real_province:
+          type: string
+        real_city:
+          type: string
+        real_adress:
+          type: string
+        real_postcode:
+          type: string
+        postcode:
+          type: string
       required:
         - id
         - user_id
@@ -687,6 +704,7 @@ components:
         - business_id
         - is_real_address
         - province
+        - postcode
     Contact:
       title: Contact
       type: object
@@ -704,7 +722,29 @@ components:
         - user_id
         - network
         - link
-  securitySchemes: {}
+  securitySchemes:
+    User Authorization:
+      type: oauth2
+      flows:
+        authorizationCode:
+          tokenUrl: 'https://ezzy.co/oauth/token'
+          scopes:
+            user.common: ''
+            user.channels: ''
+            user.contacts: ''
+            user.balance: ''
+          authorizationUrl: 'https://ezzy.co/oauth/authorize'
+    Bearer Token:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://ezzy.co/oauth/token'
+          scopes: {}
+    Idetntify Key:
+      name: identify
+      type: apiKey
+      in: query
+  examples: {}
 tags:
   - name: Auth
   - name: User

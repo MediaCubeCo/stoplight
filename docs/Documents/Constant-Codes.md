@@ -25,3 +25,17 @@ tags: [Payments]
 1 - PURPOSE_LICENSE_FEE
 2 - PURPOSE_ADVERTISING_PAYMENT 
 ```
+
+
+# Grant type
+```json
+authotization_code - этот тип предоставления токена нужно использовать при авторизационном флоу через код 
+partner - предоставление авторизационного токена для платежей
+```
+
+# KYC statuses
+```json
+1 - new
+2 - pending
+3 - approved
+```
