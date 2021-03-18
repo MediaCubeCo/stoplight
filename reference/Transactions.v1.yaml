@@ -154,9 +154,9 @@ paths:
                   kyc_status:
                     type: integer
                     enum:
-                      - '1'
-                      - '2'
-                      - '3'
+                      - 1
+                      - 2
+                      - 3
                   is_confirmed:
                     type: boolean
                     description: статус подтверждения почты
@@ -200,7 +200,7 @@ paths:
                     published_at:
                       type: string
                       format: date
-                      example: '2020-05-12T13:15:32+00:00'
+                      example: '2020-05-12'
                     views_count:
                       type: number
                     subscribers_count:
@@ -216,13 +216,7 @@ paths:
                     - videos_count
       operationId: get-oauth-user-channels
       description: 'scope name: user.channels'
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authroization
-          description: Bearer token that was issued after authorization /oauth/token
-          required: true
+      parameters: []
       tags:
         - User
       security:
@@ -323,14 +317,7 @@ paths:
                       - sub_user
       operationId: get-oauth-user-common
       description: Информация о пользователе только на английском
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authorization
-          required: true
-          description: |
-            Bearer token that was issued after authorization /oauth/token
+      parameters: []
       tags:
         - User
       security:
@@ -365,14 +352,7 @@ paths:
                   - sub_user
       operationId: get-oauth-user-contacts
       description: 'scope name: user.contacts'
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authorization
-          required: true
-          description: |
-            Bearer token that was issued after authorization /oauth/token
+      parameters: []
       tags:
         - User
       security:
@@ -520,8 +500,25 @@ paths:
     get:
       summary: Your GET endpoint
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: string
+                  real_balance:
+                    type: string
+                  credit_balance:
+                    type: string
       operationId: get-oauth-user-balance
+      security:
+        - User Authorization:
+            - user.balance
+      description: Получение текущего описания пользователя
 components:
   schemas:
     TransactionCreateResponse:
@@ -735,6 +732,7 @@ components:
             user.common: ''
             user.channels: ''
             user.contacts: ''
+            user.balance: ''
           authorizationUrl: 'https://ezzy.co/oauth/authorize'
     Bearer Token:
       type: oauth2
