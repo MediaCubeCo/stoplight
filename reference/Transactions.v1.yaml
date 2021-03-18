@@ -124,6 +124,7 @@ paths:
                   wallet:
                     type: string
                   sub_user:
+                    type: object
                     required:
                       - id
                       - email
@@ -132,7 +133,7 @@ paths:
                       - lang
                       - wallet
                       - country
-                    type: object
+                    description: если нет сабюзера выдает нулл
                     properties:
                       id:
                         type: number
@@ -148,12 +149,17 @@ paths:
                         type: string
                       country:
                         $ref: '#/components/schemas/Country'
-                  channels:
-                    type: array
-                    items:
-                      type: string
                   country:
                     $ref: '#/components/schemas/Country'
+                  kyc_status:
+                    type: integer
+                    enum:
+                      - '1'
+                      - '2'
+                      - '3'
+                  is_confirmed:
+                    type: boolean
+                    description: статус подтверждения почты
                 required:
                   - id
                   - email
@@ -162,18 +168,13 @@ paths:
                   - lang
                   - wallet
                   - sub_user
-                  - channels
                   - country
       operationId: get-oauth-user
-      description: Getting information about the user by the token
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authorization
-          description: |
-            Bearer token that was issued after authorization /oauth/token
-          required: true
+      description: |-
+        Getting information about the user by the token
+
+        если пользователь залогинен как компания то в юзере - возвращается компания а в саб юзере - пользователь
+      parameters: []
       tags:
         - User
       security:
@@ -192,39 +193,27 @@ paths:
                 items:
                   type: object
                   properties:
-                    id:
-                      type: number
                     youtube_id:
                       type: string
                     title:
                       type: string
                     published_at:
                       type: string
+                      format: date
+                      example: '2020-05-12T13:15:32+00:00'
                     views_count:
-                      type: number
-                    comments_count:
                       type: number
                     subscribers_count:
                       type: number
                     videos_count:
                       type: number
-                    gender:
-                      type: boolean
-                    is_channel_owner:
-                      type: boolean
-                    connect_request_status:
-                      type: integer
                   required:
-                    - id
                     - youtube_id
                     - title
                     - published_at
                     - views_count
-                    - comments_count
                     - subscribers_count
                     - videos_count
-                    - gender
-                    - is_channel_owner
       operationId: get-oauth-user-channels
       description: 'scope name: user.channels'
       parameters:
@@ -250,30 +239,75 @@ paths:
               schema:
                 type: object
                 properties:
-                  name:
-                    type: string
-                  email:
-                    type: string
-                  lang:
-                    type: string
-                  is_confirmed:
-                    type: boolean
-                  avatar:
-                    type: string
-                  wallet:
-                    type: string
-                  profile:
-                    $ref: '#/components/schemas/Profile'
-                  birthday:
-                    type: string
-                  sex:
-                    type: boolean
-                  country_id:
-                    type: number
-                  country:
-                    $ref: '#/components/schemas/Country'
-                  sub_user:
+                  common:
                     type: object
+                    properties:
+                      name:
+                        type: string
+                        description: first name + last name
+                      email:
+                        type: string
+                        format: email
+                      lang:
+                        type: string
+                        description: xx - формат языка из исо
+                      is_confirmed:
+                        type: boolean
+                      avatar:
+                        type: string
+                        format: uri
+                      wallet:
+                        type: string
+                      profile:
+                        $ref: '#/components/schemas/Profile'
+                      birthday:
+                        type: string
+                      sex:
+                        type: boolean
+                      country_id:
+                        type: number
+                      country:
+                        $ref: '#/components/schemas/Country'
+                      sub_user:
+                        type: object
+                        properties:
+                          common:
+                            type: object
+                            required:
+                              - name
+                              - email
+                              - lang
+                              - is_confirmed
+                              - avatar
+                              - wallet
+                              - profile
+                              - birthday
+                              - sex
+                              - country_id
+                              - country
+                            properties:
+                              name:
+                                type: string
+                              email:
+                                type: string
+                              lang:
+                                type: string
+                              is_confirmed:
+                                type: boolean
+                              avatar:
+                                type: string
+                              wallet:
+                                type: string
+                              profile:
+                                $ref: '#/components/schemas/Profile'
+                              birthday:
+                                type: string
+                              sex:
+                                type: string
+                              country_id:
+                                type: number
+                              country:
+                                $ref: '#/components/schemas/Country'
                     required:
                       - name
                       - email
@@ -286,44 +320,9 @@ paths:
                       - sex
                       - country_id
                       - country
-                    properties:
-                      name:
-                        type: string
-                      email:
-                        type: string
-                      lang:
-                        type: string
-                      is_confirmed:
-                        type: boolean
-                      avatar:
-                        type: string
-                      wallet:
-                        type: string
-                      profile:
-                        $ref: '#/components/schemas/Profile'
-                      birthday:
-                        type: string
-                      sex:
-                        type: string
-                      country_id:
-                        type: number
-                      country:
-                        $ref: '#/components/schemas/Country'
-                required:
-                  - name
-                  - email
-                  - lang
-                  - is_confirmed
-                  - avatar
-                  - wallet
-                  - profile
-                  - birthday
-                  - sex
-                  - country_id
-                  - country
-                  - sub_user
+                      - sub_user
       operationId: get-oauth-user-common
-      description: 'scope name: user.common'
+      description: Информация о пользователе только на английском
       parameters:
         - schema:
             type: string
@@ -667,6 +666,7 @@ components:
           type: string
         name:
           type: string
+          description: first_name last_name
         region:
           type: string
         city:
@@ -683,6 +683,16 @@ components:
           type: boolean
         province:
           type: string
+        real_province:
+          type: string
+        real_city:
+          type: string
+        real_adress:
+          type: string
+        real_postcode:
+          type: string
+        postcode:
+          type: string
       required:
         - id
         - user_id
@@ -697,6 +707,7 @@ components:
         - business_id
         - is_real_address
         - province
+        - postcode
     Contact:
       title: Contact
       type: object
@@ -734,7 +745,7 @@ components:
     Idetntify Key:
       name: identify
       type: apiKey
-      in: body
+      in: query
   examples: {}
 tags:
   - name: Auth
