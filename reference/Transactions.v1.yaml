@@ -88,7 +88,7 @@ paths:
                   client_secret: secret
               authorization_code:
                 value:
-                  grant_type: authorization
+                  grant_type: authorization_code
                   client_id: '1'
                   client_secret: secret
                   scopes: user.channels user.common user.contacts
@@ -734,7 +734,8 @@ components:
     Idetntify Key:
       name: identify
       type: apiKey
-      in: query
+      in: body
+  examples: {}
 tags:
   - name: Auth
   - name: User
