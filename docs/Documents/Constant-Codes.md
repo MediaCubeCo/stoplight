@@ -29,6 +29,6 @@ tags: [Payments]
 
 # Grant type
 ```json
-authotization_code - 
-partner - 
+authotization_code - этот тип предоставления токена нужно использовать при авторизационном флоу через код 
+partner - предоставление авторизационного токена для платежей
 ```
