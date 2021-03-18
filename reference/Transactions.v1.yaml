@@ -273,9 +273,7 @@ paths:
                   country:
                     $ref: '#/components/schemas/Country'
                   sub_user:
-                    type:
-                      - object
-                      - 'null'
+                    type: object
                     required:
                       - name
                       - email
@@ -355,9 +353,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Contact'
                   sub_user:
-                    type:
-                      - object
-                      - 'null'
+                    type: object
                     required:
                       - contracts
                     properties:
@@ -468,10 +464,6 @@ paths:
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionCreateResponse'
         '401':
           description: Unauthorized
         '403':
@@ -678,29 +670,19 @@ components:
         region:
           type: string
         city:
-          type:
-            - string
-            - 'null'
+          type: string
         address:
-          type:
-            - string
-            - 'null'
+          type: string
         lang:
           type: string
         tax_id:
-          type:
-            - string
-            - 'null'
+          type: string
         business_id:
-          type:
-            - string
-            - 'null'
+          type: string
         is_real_address:
           type: boolean
         province:
-          type:
-            - string
-            - 'null'
+          type: string
       required:
         - id
         - user_id
