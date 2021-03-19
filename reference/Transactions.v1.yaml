@@ -70,7 +70,6 @@ paths:
                   type: string
                 scopes:
                   type: string
-                  description: '* - Все доступные скоупы определены в ../docs/Documents/User-Scopes.md'
                 code:
                   type: string
                 redirect_url:
@@ -95,8 +94,8 @@ paths:
                   code: hjgsfugdskhgvklundfluvhdfnlvhls
                   redirect_url: 'https://yourapp.com/endpoint'
         description: |-
-          Если используется гранд_тайп = партнер не ипрользются скоупы код и редирект урл
-          если испольуется аусентификейшен_код то код и редирект юрл обязательны
+          If the grant_type "partner" is used then code ,redirect_url and scopes do not use
+          If the authentication_code is used, then code and redirect_url are required.
       description: Gaining access
       tags:
         - Auth
@@ -133,7 +132,7 @@ paths:
                       - lang
                       - wallet
                       - country
-                    description: если нет сабюзера выдает нулл
+                    description: if user logged in as natural person it return null in the subuser object
                     properties:
                       id:
                         type: number
@@ -173,7 +172,7 @@ paths:
       description: |-
         Getting information about the user by the token
 
-        если пользователь залогинен как компания то в юзере - возвращается компания а в саб юзере - пользователь
+        If the user logged in as a company, then in the user fields returns company information, and in the subuser - curent user in the company
       parameters: []
       tags:
         - User
@@ -244,7 +243,7 @@ paths:
                         format: email
                       lang:
                         type: string
-                        description: xx - формат языка из исо
+                        description: xx - Language format from ISO
                       is_confirmed:
                         type: boolean
                       avatar:
@@ -316,7 +315,7 @@ paths:
                       - country
                       - sub_user
       operationId: get-oauth-user-common
-      description: Информация о пользователе только на английском
+      description: User unformation is in English only
       parameters: []
       tags:
         - User
@@ -518,7 +517,7 @@ paths:
       security:
         - User Authorization:
             - user.balance
-      description: Получение текущего описания пользователя
+      description: getting current state of users' balance
 components:
   schemas:
     TransactionCreateResponse:

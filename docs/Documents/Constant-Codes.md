@@ -29,8 +29,8 @@ tags: [Payments]
 
 # Grant type
 ```json
-authotization_code - этот тип предоставления токена нужно использовать при авторизационном флоу через код 
-partner - предоставление авторизационного токена для платежей
+authotization_code - this type of token provision should be used for authorization flow through code.
+рartner - providing an authorization token for payments, getting by credentials oauth flow
 ```
 
 # KYC statuses
