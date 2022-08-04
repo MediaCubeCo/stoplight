@@ -93,8 +93,8 @@ paths:
                   code: hjgsfugdskhgvklundfluvhdfnlvhls
                   redirect_url: 'https://yourapp.com/endpoint'
         description: |-
-          If the grant_type "partner" is used then code redirect_url and scopes are not used
-          If the authentication_code is used, then code and redirect_url are required.
+          If the grant_type "partner" is used then code redirect_url and scopes are not required.
+          If the "authentication_code" is used, then code and redirect_url are required.
       description: Gaining access
       tags:
         - Auth
