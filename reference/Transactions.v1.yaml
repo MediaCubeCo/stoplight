@@ -377,12 +377,6 @@ paths:
           required: true
         - schema:
             type: string
-            example: XMLHttpRequest
-          in: header
-          name: X-Requested-With
-          required: true
-        - schema:
-            type: string
             example: application/json
           in: header
           name: Accept
@@ -424,12 +418,7 @@ components:
       properties:
         request_id:
           type: string
-          minLength: 16
-          maxLength: 255
-          description: randomly generated unique line
-        description:
-          type: string
-          description: message of withdrawal of funds from your Ezzy account. Will be displayed in the  _Transactions_ tab in Ezzy
+          description: uuid v4
         data:
           type: array
           items:
@@ -437,21 +426,18 @@ components:
             properties:
               wallet:
                 type: string
-                description: existing wallet number of the Ezzy system user
-                minLength: 16
-                maxLength: 16
+                description: existing wallet number of the system user
               amount:
                 type: string
               description:
                 type: string
-                description: message about the funds receipt. Will be displayed in the _Transactions_ tab in Ezzy
+                description: message about the funds receipt. Will be displayed in the _Transactions_ tab
             required:
               - wallet
               - amount
               - description
       required:
         - request_id
-        - description
         - data
     TransactionStatusRequest:
       title: TarnsactionStatusRequest
