@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Ezzy Pay
+  title: McPay
   version: '1.0'
   description: Payment API for making bulk transactions between third-party applications and Ezzy
   contact:
