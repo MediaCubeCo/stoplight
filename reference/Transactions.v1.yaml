@@ -6,12 +6,11 @@ info:
   contact:
     name: Egor
     email: en@mediacube.network
-  termsOfService: 'https://apidocks.ezzy.co/terms'
 servers:
-  - url: 'https://ezzy.co'
+  - url: 'https://mcpay.io'
     description: Production
   - description: Development
-    url: 'https://id.mediacube.dev'
+    url: 'https://mp.mediacube.dev'
 paths:
   /oauth/token:
     post:
@@ -94,7 +93,7 @@ paths:
                   code: hjgsfugdskhgvklundfluvhdfnlvhls
                   redirect_url: 'https://yourapp.com/endpoint'
         description: |-
-          If the grant_type "partner" is used then code ,redirect_url and scopes do not use
+          If the grant_type "partner" is used then code redirect_url and scopes are not used
           If the authentication_code is used, then code and redirect_url are required.
       description: Gaining access
       tags:
@@ -122,43 +121,19 @@ paths:
                     type: string
                   wallet:
                     type: string
-                  sub_user:
-                    type: object
-                    required:
-                      - id
-                      - email
-                      - first_name
-                      - last_name
-                      - lang
-                      - wallet
-                      - country
-                    description: if user logged in as natural person it return null in the subuser object
-                    properties:
-                      id:
-                        type: number
-                      email:
-                        type: string
-                      first_name:
-                        type: string
-                      last_name:
-                        type: string
-                      lang:
-                        type: string
-                      wallet:
-                        type: string
-                      country:
-                        $ref: '#/components/schemas/Country'
-                  country:
-                    $ref: '#/components/schemas/Country'
                   kyc_status:
-                    type: integer
-                    enum:
-                      - 1
-                      - 2
-                      - 3
+                    type: number
                   is_confirmed:
                     type: boolean
                     description: статус подтверждения почты
+                  is_company:
+                    type: boolean
+                  channels:
+                    type: string
+                  created_at:
+                    type: string
+                  country:
+                    $ref: '#/components/schemas/Country'
                 required:
                   - id
                   - email
@@ -166,13 +141,9 @@ paths:
                   - last_name
                   - lang
                   - wallet
-                  - sub_user
                   - country
       operationId: get-oauth-user
-      description: |-
-        Getting information about the user by the token
-
-        If the user logged in as a company, then in the user fields returns company information, and in the subuser - curent user in the company
+      description: Getting information about the user by the token
       parameters: []
       tags:
         - User
@@ -204,15 +175,16 @@ paths:
                       type: number
                     subscribers_count:
                       type: number
-                    videos_count:
-                      type: number
+                    is_google_user_owner:
+                      type: boolean
+                    image:
+                      type: string
                   required:
                     - youtube_id
                     - title
                     - published_at
                     - views_count
                     - subscribers_count
-                    - videos_count
       operationId: get-oauth-user-channels
       description: 'scope name: user.channels'
       parameters: []
@@ -261,46 +233,6 @@ paths:
                         type: number
                       country:
                         $ref: '#/components/schemas/Country'
-                      sub_user:
-                        type: object
-                        properties:
-                          common:
-                            type: object
-                            required:
-                              - name
-                              - email
-                              - lang
-                              - is_confirmed
-                              - avatar
-                              - wallet
-                              - profile
-                              - birthday
-                              - sex
-                              - country_id
-                              - country
-                            properties:
-                              name:
-                                type: string
-                              email:
-                                type: string
-                              lang:
-                                type: string
-                              is_confirmed:
-                                type: boolean
-                              avatar:
-                                type: string
-                              wallet:
-                                type: string
-                              profile:
-                                $ref: '#/components/schemas/Profile'
-                              birthday:
-                                type: string
-                              sex:
-                                type: string
-                              country_id:
-                                type: number
-                              country:
-                                $ref: '#/components/schemas/Country'
                     required:
                       - name
                       - email
@@ -313,7 +245,6 @@ paths:
                       - sex
                       - country_id
                       - country
-                      - sub_user
       operationId: get-oauth-user-common
       description: User unformation is in English only
       parameters: []
@@ -322,41 +253,6 @@ paths:
       security:
         - User Authorization:
             - user.common
-  /oauth/user/contacts:
-    get:
-      summary: '[OAuth] Scope User Contacts'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  contacts:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Contact'
-                  sub_user:
-                    type: object
-                    required:
-                      - contracts
-                    properties:
-                      contracts:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Contact'
-                required:
-                  - contacts
-                  - sub_user
-      operationId: get-oauth-user-contacts
-      description: 'scope name: user.contacts'
-      parameters: []
-      tags:
-        - User
-      security:
-        - User Authorization:
-            - user.contacts
   /payments:
     post:
       summary: Transaction creation
@@ -491,53 +387,13 @@ paths:
           in: header
           name: Accept
           required: true
-      security:
-        - Bearer Token: []
-          Idetntify Key: []
+      security: []
     parameters: []
-  /oauth/user/balance:
-    get:
-      summary: Your GET endpoint
-      tags:
-        - User
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  balance:
-                    type: string
-                  real_balance:
-                    type: string
-                  credit_balance:
-                    type: string
-      operationId: get-oauth-user-balance
-      security:
-        - User Authorization:
-            - user.balance
-      description: getting current state of users' balance
 components:
   schemas:
     TransactionCreateResponse:
       title: Transaction creation scheme (response)
       type: object
-      properties:
-        data:
-          type: object
-          properties:
-            request_id:
-              type: string
-            status:
-              type: string
-            err_msg:
-              type: string
-            uuid:
-              type: string
-              format: uuid
-              description: 'Transaction ID, use it for batch transfer of transactions.'
       x-examples:
         Example:
           data:
@@ -550,21 +406,22 @@ components:
             status: 3
             err_msg: 3000
       description: ''
+      properties:
+        data:
+          type: object
+          properties:
+            request_id:
+              type: string
+            status:
+              type: string
+            err_msg:
+              type: string
     TransactionCreateRequest:
       title: Transaction creation scheme
       type: object
       x-examples: {}
       description: ''
       properties:
-        identify:
-          type: string
-          description: 'To get an Identify Key, contact our support.'
-        purpose:
-          type: integer
-          enum:
-            - 1
-            - 2
-          example: 1
         request_id:
           type: string
           minLength: 16
@@ -588,37 +445,28 @@ components:
               description:
                 type: string
                 description: message about the funds receipt. Will be displayed in the _Transactions_ tab in Ezzy
-              uuid:
-                type: string
-                format: uuid
-                description: 'Transaction ID, use it for batch transfer of transactions.'
             required:
               - wallet
               - amount
               - description
       required:
-        - identify
-        - purpose
         - request_id
         - description
         - data
     TransactionStatusRequest:
       title: TarnsactionStatusRequest
       type: object
+      x-examples:
+        example: {}
+      description: ''
       properties:
-        identify:
-          type: string
         request_id:
           type: string
           minLength: 16
           maxLength: 255
           example: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
       required:
-        - identify
         - request_id
-      x-examples:
-        example: {}
-      description: ''
     Country:
       title: Country
       type: object
@@ -630,25 +478,16 @@ components:
           type: string
         code:
           type: string
+        code_aplha3:
+          type: string
         name:
-          type: string
-        order:
-          type: number
-        flag:
-          type: string
-        created_at:
-          type: string
-        updated_at:
           type: string
       required:
         - id
         - youtube_id
         - code
+        - code_aplha3
         - name
-        - order
-        - flag
-        - created_at
-        - updated_at
     Profile:
       title: Profile
       type: object
@@ -660,6 +499,8 @@ components:
         first_name:
           type: string
         last_name:
+          type: string
+        middle_name:
           type: string
         name:
           type: string
@@ -690,11 +531,14 @@ components:
           type: string
         postcode:
           type: string
+        company_name:
+          type: string
       required:
         - id
         - user_id
         - first_name
         - last_name
+        - middle_name
         - name
         - region
         - city
@@ -705,45 +549,24 @@ components:
         - is_real_address
         - province
         - postcode
-    Contact:
-      title: Contact
-      type: object
-      properties:
-        id:
-          type: number
-        user_id:
-          type: number
-        network:
-          type: string
-        link:
-          type: string
-      required:
-        - id
-        - user_id
-        - network
-        - link
   securitySchemes:
     User Authorization:
       type: oauth2
       flows:
         authorizationCode:
-          tokenUrl: 'https://ezzy.co/oauth/token'
+          tokenUrl: 'https://mcpay.io/oauth/token'
           scopes:
             user.common: ''
             user.channels: ''
-            user.contacts: ''
-            user.balance: ''
-          authorizationUrl: 'https://ezzy.co/oauth/authorize'
+          authorizationUrl: 'https://mcpay.io/oauth/authorize'
+      description: ''
     Bearer Token:
       type: oauth2
       flows:
         clientCredentials:
           tokenUrl: 'https://ezzy.co/oauth/token'
           scopes: {}
-    Idetntify Key:
-      name: identify
-      type: apiKey
-      in: query
+      description: ''
   examples: {}
 tags:
   - name: Auth
