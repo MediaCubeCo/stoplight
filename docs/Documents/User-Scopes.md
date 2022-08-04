@@ -1,3 +1,0 @@
-# User-Scopes
-
-The beginning of an awesome article...

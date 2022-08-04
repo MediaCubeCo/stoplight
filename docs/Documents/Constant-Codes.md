@@ -19,14 +19,6 @@ tags: [Payments]
 4000 - ERROR_CODE_APPLICATION_EXCEPTION    
 ```
 
-# Pament purpose Codes
-
-```json
-1 - PURPOSE_LICENSE_FEE
-2 - PURPOSE_ADVERTISING_PAYMENT 
-```
-
-
 # Grant type
 ```json
 authotization_code - this type of token provision should be used for authorization flow through code.
