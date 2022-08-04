@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: McPay
   version: '1.0'
-  description: Payment API for making bulk transactions between third-party applications and Ezzy
+  description: Payment API for making bulk transactions between third-party applications and McPay
   contact:
     name: Egor
     email: en@mediacube.network
