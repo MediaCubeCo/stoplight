@@ -2,10 +2,15 @@ openapi: 3.0.0
 info:
   title: McPay
   version: '1.0'
-  description: Payment API for making bulk transactions between third-party applications and McPay
+  description: McPay OAauth and McPayments docs
   contact:
     name: Egor
     email: en@mediacube.network
+    url: mcpay.io
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+  termsOfService: 'https://mcpay.io/api/privacy'
 servers:
   - url: 'https://mcpay.io'
     description: Production
@@ -14,7 +19,7 @@ servers:
 paths:
   /oauth/token:
     post:
-      summary: Authentication
+      summary: '[OAuth] Token'
       operationId: post-oauth-token
       responses:
         '200':
@@ -32,10 +37,6 @@ paths:
                     type: string
                   access_token:
                     type: string
-                required:
-                  - token_type
-                  - expires_in
-                  - access_token
         '401':
           description: Unauthorized
           content:
@@ -74,10 +75,6 @@ paths:
                 redirect_url:
                   type: string
                   format: uri
-              required:
-                - grant_type
-                - client_id
-                - client_secret
             examples:
               partner:
                 value:
@@ -134,24 +131,21 @@ paths:
                     type: string
                   country:
                     $ref: '#/components/schemas/Country'
-                required:
-                  - id
-                  - email
-                  - first_name
-                  - last_name
-                  - lang
-                  - wallet
-                  - country
       operationId: get-oauth-user
       description: Getting information about the user by the token
-      parameters: []
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
       tags:
         - User
       security:
-        - User Authorization: []
+        - Auth code: []
   /oauth/user/channels:
     get:
-      summary: '[OAuth] Scope User Channels'
+      summary: '[OAuth] Channel scope'
       responses:
         '200':
           description: OK
@@ -179,23 +173,22 @@ paths:
                       type: boolean
                     image:
                       type: string
-                  required:
-                    - youtube_id
-                    - title
-                    - published_at
-                    - views_count
-                    - subscribers_count
       operationId: get-oauth-user-channels
-      description: 'scope name: user.channels'
-      parameters: []
+      description: Getting info about channels assigned to the user
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
       tags:
         - User
       security:
-        - User Authorization:
+        - Auth code:
             - user.channels
   /oauth/user/common:
     get:
-      summary: '[OAuth] Scope User Common'
+      summary: '[OAuth] Common scope'
       responses:
         '200':
           description: OK
@@ -233,25 +226,18 @@ paths:
                         type: number
                       country:
                         $ref: '#/components/schemas/Country'
-                    required:
-                      - name
-                      - email
-                      - lang
-                      - is_confirmed
-                      - avatar
-                      - wallet
-                      - profile
-                      - birthday
-                      - sex
-                      - country_id
-                      - country
       operationId: get-oauth-user-common
       description: User unformation is in English only
-      parameters: []
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
       tags:
         - User
       security:
-        - User Authorization:
+        - Auth code:
             - user.common
   /payments:
     post:
@@ -285,6 +271,7 @@ paths:
           in: header
           name: Authorization
           required: true
+          description: 'Token from partner grant '
         - schema:
             type: string
             example: application/json
@@ -296,12 +283,6 @@ paths:
             example: application/json
           in: header
           name: Accept
-          required: true
-        - schema:
-            type: string
-            example: XMLHttpRequest
-          in: header
-          name: X-Requested-With
           required: true
       requestBody:
         content:
@@ -332,6 +313,8 @@ paths:
         description: ''
       tags:
         - Payments
+      security:
+        - Client credentials: []
     get:
       summary: Getting transaction status
       operationId: get-payments
@@ -381,7 +364,8 @@ paths:
           in: header
           name: Accept
           required: true
-      security: []
+      security:
+        - Client credentials: []
     parameters: []
 components:
   schemas:
@@ -432,13 +416,6 @@ components:
               description:
                 type: string
                 description: message about the funds receipt. Will be displayed in the _Transactions_ tab
-            required:
-              - wallet
-              - amount
-              - description
-      required:
-        - request_id
-        - data
     TransactionStatusRequest:
       title: TarnsactionStatusRequest
       type: object
@@ -451,8 +428,6 @@ components:
           minLength: 16
           maxLength: 255
           example: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
-      required:
-        - request_id
     Country:
       title: Country
       type: object
@@ -468,12 +443,6 @@ components:
           type: string
         name:
           type: string
-      required:
-        - id
-        - youtube_id
-        - code
-        - code_aplha3
-        - name
     Profile:
       title: Profile
       type: object
@@ -519,40 +488,26 @@ components:
           type: string
         company_name:
           type: string
-      required:
-        - id
-        - user_id
-        - first_name
-        - last_name
-        - middle_name
-        - name
-        - region
-        - city
-        - address
-        - lang
-        - tax_id
-        - business_id
-        - is_real_address
-        - province
-        - postcode
   securitySchemes:
-    User Authorization:
-      type: oauth2
-      flows:
-        authorizationCode:
-          tokenUrl: 'https://mcpay.io/oauth/token'
-          scopes:
-            user.common: ''
-            user.channels: ''
-          authorizationUrl: 'https://mcpay.io/oauth/authorize'
-      description: ''
-    Bearer Token:
+    Client credentials:
       type: oauth2
       flows:
         clientCredentials:
-          tokenUrl: 'https://ezzy.co/oauth/token'
+          refreshUrl: 'https://mcpay,io/oauth/token'
           scopes: {}
-      description: ''
+          tokenUrl: 'https://mcpay,io/oauth/token'
+      description: Access to McPayments API
+    Auth code:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://mcpay,io/oauth/authorize'
+          tokenUrl: 'https://mcpay,io/oauth/token'
+          scopes:
+            user.channels: Channels assigned to user
+            user.common: 'User full english profile '
+          refreshUrl: 'https://mcpay,io/oauth/token'
+      description: Basic auth_code flow with redirect and callback
   examples: {}
 tags:
   - name: Auth
