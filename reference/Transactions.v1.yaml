@@ -90,9 +90,9 @@ paths:
                   code: hjgsfugdskhgvklundfluvhdfnlvhls
                   redirect_url: 'https://yourapp.com/endpoint'
         description: |-
-          If the grant_type "partner" is used then code redirect_url and scopes are not required.
-          If the "authentication_code" is used, then code and redirect_url are required.
-      description: ''
+          If the grant_type "partner" is used then code redirect_url and scopes are not used.
+          If the grant_type "authentication_code" is used, then code and redirect_url are required. (1)
+      description: Auth Token to retrieve data(1)
       tags:
         - Auth
   /oauth/user:
@@ -118,11 +118,12 @@ paths:
                     type: string
                   wallet:
                     type: string
+                    description: кошелек пользователя (1)
                   kyc_status:
                     type: number
                   is_confirmed:
                     type: boolean
-                    description: статус подтверждения почты
+                    description: статус подтверждения почты (1)
                   is_company:
                     type: boolean
                   channels:
@@ -132,7 +133,7 @@ paths:
                   country:
                     $ref: '#/components/schemas/Country'
       operationId: get-oauth-user
-      description: Getting information about the user by the token
+      description: Getting information about the user by the token(1)
       parameters:
         - schema:
             type: string
@@ -174,7 +175,7 @@ paths:
                     image:
                       type: string
       operationId: get-oauth-user-channels
-      description: Getting info about channels assigned to the user
+      description: Getting info about channels assigned to the user(1)
       parameters:
         - schema:
             type: string
@@ -227,7 +228,7 @@ paths:
                       country:
                         $ref: '#/components/schemas/Country'
       operationId: get-oauth-user-common
-      description: User unformation is in English only
+      description: User unformation is in English only(1)
       parameters:
         - schema:
             type: string
@@ -316,7 +317,7 @@ paths:
       security:
         - Client credentials: []
     get:
-      summary: Getting transaction status
+      summary: Getting transaction status (1)
       operationId: get-payments
       responses:
         '200':
@@ -325,7 +326,7 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
-      description: Transaction status
+      description: Transaction status (1)
       tags:
         - Payments
       requestBody:
@@ -370,7 +371,7 @@ paths:
 components:
   schemas:
     TransactionCreateResponse:
-      title: Transaction creation scheme (response)
+      title: Transaction creation scheme (response) (1)
       type: object
       x-examples:
         Example:
@@ -395,7 +396,7 @@ components:
             err_msg:
               type: string
     TransactionCreateRequest:
-      title: Transaction creation scheme
+      title: Transaction creation scheme (1)
       type: object
       x-examples: {}
       description: ''
@@ -417,7 +418,7 @@ components:
                 type: string
                 description: message about the funds receipt. Will be displayed in the _Transactions_ tab
     TransactionStatusRequest:
-      title: TarnsactionStatusRequest
+      title: TarnsactionStatusRequest (1)
       type: object
       x-examples:
         example: {}
@@ -459,7 +460,6 @@ components:
           type: string
         name:
           type: string
-          description: first_name last_name
         region:
           type: string
         city:

@@ -14,8 +14,8 @@ tags: [Payments]
 - 4000 - ERROR_CODE_APPLICATION_EXCEPTION    
 
 ## OAuth grant types
-- authotization_code - this type of token provision should be used for authorization flow through code.
-- рartner - providing an authorization token for **payments**, getting by credentials oauth flow
+- authotization_code - this type of token provision should be used for authorization flow through code. (1)
+- рartner - providing an authorization token for **payments**, getting by credentials oauth flow (1)
 
 ## KYC statuses
 - 1 - new
