@@ -240,6 +240,37 @@ paths:
       security:
         - Auth code:
             - user.common
+  /oauth/user/balance:
+    get:
+      summary: '[OAuth] Balance scope'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: string
+                  real_balance:
+                    type: string
+                  credit_balance:
+                    type: string
+      operationId: get-oauth-user-balance
+      description: User balance information
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+      tags:
+        - User
+      security:
+        - Auth code:
+            - user.common
+    parameters: []
   /payments:
     post:
       summary: Transaction creation
@@ -506,6 +537,7 @@ components:
           scopes:
             user.channels: Channels assigned to user
             user.common: 'User full english profile '
+            user.balance: 'User balance '
           refreshUrl: 'https://mcpay,io/oauth/token'
       description: Basic auth_code flow with redirect and callback
   examples: {}
