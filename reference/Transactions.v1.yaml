@@ -72,7 +72,7 @@ paths:
                   type: string
                 code:
                   type: string
-                redirect_url:
+                redirect_uri:
                   type: string
                   format: uri
             examples:
