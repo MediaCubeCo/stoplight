@@ -3,7 +3,6 @@ tags: [Payments]
 ---
 
 ## Payment status
-- 1 - processing
 - 2 - success
 - 3 - error
 
