@@ -124,7 +124,7 @@ paths:
                   country:
                     $ref: '#/components/schemas/Country'
       operationId: get-oauth-user
-      description: Getting information about the user by the token(1)
+      description: ''
       parameters:
         - schema:
             type: string
@@ -166,7 +166,7 @@ paths:
                     image:
                       type: string
       operationId: get-oauth-user-channels
-      description: Getting info about channels assigned to the user(1)
+      description: ''
       parameters:
         - schema:
             type: string
@@ -219,7 +219,7 @@ paths:
                       country:
                         $ref: '#/components/schemas/Country'
       operationId: get-oauth-user-common
-      description: User unformation is in English only(1)
+      description: ''
       parameters:
         - schema:
             type: string
@@ -249,7 +249,7 @@ paths:
                   credit_balance:
                     type: string
       operationId: get-oauth-user-balance
-      description: User balance information
+      description: ''
       parameters:
         - schema:
             type: string
@@ -265,7 +265,7 @@ paths:
   /payments:
     post:
       summary: Create payment
-      operationId: ''
+      operationId: post-payments
       responses:
         '200':
           description: OK
@@ -309,7 +309,7 @@ paths:
               $ref: '#/components/schemas/McPaymentRequest'
     get:
       summary: Get payment
-      operationId: ''
+      operationId: get-payments
       responses:
         '200':
           description: OK
