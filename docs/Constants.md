@@ -2,6 +2,7 @@
 tags: [Payout]
 stoplight-id: 2387a19862cb8
 ---
+# Constants
 
 ## Statuses
 

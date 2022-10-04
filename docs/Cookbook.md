@@ -1,5 +1,5 @@
 ---
-tags: [Example]
+tags: [Cookbook]
 stoplight-id: 557339a3cbec6
 ---
 
@@ -40,7 +40,7 @@ Http::asJson()
 ```php
 Http::asJson()
   ->post('https://mp-stage.mediacube.dev/oauth/token', [
-      'grant_type' => 'authorization_code',
+      'grant_type' => 'partner',
       'client_id' => 1,
       'client_secret' => '<secret>',
   ]);
