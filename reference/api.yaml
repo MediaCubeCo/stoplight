@@ -1,21 +1,15 @@
 openapi: 3.0.0
 info:
   title: McPay
-  version: '1.0'
+  version: '1'
   description: McPay OAauth and McPayments docs
-  contact:
-    name: Egor
-    email: en@mediacube.network
-    url: mcpay.io
-  license:
-    name: Apache 2.0
-    url: 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-  termsOfService: 'https://mcpay.io/api/privacy'
+  contact: {}
+  license: {}
 servers:
   - url: 'https://mcpay.io'
     description: Production
   - description: Development
-    url: 'https://mp.mediacube.dev'
+    url: 'https://mp-stage.mediacube.dev'
 paths:
   /oauth/token:
     post:
@@ -63,7 +57,6 @@ paths:
               properties:
                 grant_type:
                   type: string
-                  description: authorization types. see description in Constant-Codes.md
                 client_id:
                   type: string
                 client_secret:
@@ -89,12 +82,10 @@ paths:
                   scopes: user.channels user.common user.contacts
                   code: hjgsfugdskhgvklundfluvhdfnlvhls
                   redirect_url: 'https://yourapp.com/endpoint'
-        description: |-
-          If the grant_type "partner" is used then code redirect_url and scopes are not used.
-          If the grant_type "authentication_code" is used, then code and redirect_url are required. (1)
-      description: Auth Token to retrieve data(1)
+        description: ''
+      description: ''
       tags:
-        - Auth
+        - OAuth
   /oauth/user:
     get:
       summary: '[OAuth] User'
@@ -140,13 +131,13 @@ paths:
           in: header
           name: Authorization
           required: true
-      tags:
-        - User
       security:
         - Auth code: []
+      tags:
+        - OAuth
   /oauth/user/channels:
     get:
-      summary: '[OAuth] Channel scope'
+      summary: '[OAuth] Channel Scope'
       responses:
         '200':
           description: OK
@@ -182,14 +173,14 @@ paths:
           in: header
           name: Authorization
           required: true
-      tags:
-        - User
       security:
         - Auth code:
             - user.channels
+      tags:
+        - OAuth
   /oauth/user/common:
     get:
-      summary: '[OAuth] Common scope'
+      summary: '[OAuth] Common Scope'
       responses:
         '200':
           description: OK
@@ -235,14 +226,14 @@ paths:
           in: header
           name: Authorization
           required: true
-      tags:
-        - User
       security:
         - Auth code:
             - user.common
+      tags:
+        - OAuth
   /oauth/user/balance:
     get:
-      summary: '[OAuth] Balance scope'
+      summary: '[OAuth] Balance Scope'
       responses:
         '200':
           description: OK
@@ -265,37 +256,28 @@ paths:
           in: header
           name: Authorization
           required: true
-      tags:
-        - User
       security:
         - Auth code:
             - user.common
+      tags:
+        - OAuth
     parameters: []
   /payments:
     post:
-      summary: Transaction creation
-      operationId: post-payments
+      summary: Create payment
+      operationId: ''
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionCreateResponse'
-              examples:
-                Example:
-                  value:
-                    data:
-                      request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
-                      status: '2'
-                      err_msg: 'null'
+                $ref: '#/components/schemas/McPaymentResource'
         '401':
           description: Your Access Token does not have access
-        '403':
-          description: Your Identify Key does not have enough rights to perform the operation
         '422':
           description: Incorrect data
-      description: Transaction creation
+      description: ''
       parameters:
         - schema:
             type: string
@@ -316,65 +298,32 @@ paths:
           in: header
           name: Accept
           required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TransactionCreateRequest'
-            examples: {}
-          application/xml:
-            schema:
-              type: object
-              properties: {}
-          multipart/form-data:
-            schema:
-              type: object
-              properties: {}
-          text/html:
-            schema:
-              type: object
-              properties: {}
-          text/plain:
-            schema:
-              type: object
-              properties: {}
-          application/EDI-X12:
-            schema:
-              type: object
-              properties: {}
-        description: ''
       tags:
         - Payments
       security:
         - Client credentials: []
-    get:
-      summary: Getting transaction status (1)
-      operationId: get-payments
-      responses:
-        '200':
-          description: OK
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-      description: Transaction status (1)
-      tags:
-        - Payments
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransactionStatusRequest'
-            examples: {}
-          application/xml:
-            schema:
-              type: object
-              properties: {}
-          multipart/form-data:
-            schema:
-              type: object
-              properties: {}
-        description: ''
+              $ref: '#/components/schemas/McPaymentRequest'
+    get:
+      summary: Get payment
+      operationId: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/McPaymentResource'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      description: ''
+      tags:
+        - Payments
       parameters:
         - schema:
             type: string
@@ -398,68 +347,18 @@ paths:
           required: true
       security:
         - Client credentials: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_id:
+                  type: string
+        description: ''
     parameters: []
 components:
   schemas:
-    TransactionCreateResponse:
-      title: Transaction creation scheme (response) (1)
-      type: object
-      x-examples:
-        Example:
-          data:
-            request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
-            status: 2
-            err_msg: null
-        example-2:
-          data:
-            request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
-            status: 3
-            err_msg: 3000
-      description: ''
-      properties:
-        data:
-          type: object
-          properties:
-            request_id:
-              type: string
-            status:
-              type: string
-            err_msg:
-              type: string
-    TransactionCreateRequest:
-      title: Transaction creation scheme (1)
-      type: object
-      x-examples: {}
-      description: ''
-      properties:
-        request_id:
-          type: string
-          description: uuid v4
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              wallet:
-                type: string
-                description: existing wallet number of the system user
-              amount:
-                type: string
-              description:
-                type: string
-                description: message about the funds receipt. Will be displayed in the _Transactions_ tab
-    TransactionStatusRequest:
-      title: TarnsactionStatusRequest (1)
-      type: object
-      x-examples:
-        example: {}
-      description: ''
-      properties:
-        request_id:
-          type: string
-          minLength: 16
-          maxLength: 255
-          example: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
     Country:
       title: Country
       type: object
@@ -519,6 +418,72 @@ components:
           type: string
         company_name:
           type: string
+    McPaymentRequest:
+      title: McPaymentRequest
+      x-stoplight:
+        id: de2bq7lgdyjc8
+      type: object
+      properties:
+        request_id:
+          type: string
+          minLength: 16
+          maxLength: 255
+          description: 'Unique string like UUIDv4 '
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              wallet:
+                type: string
+                description: McPay user's wallet
+                minLength: 16
+                maxLength: 16
+              amount:
+                type: string
+              description:
+                type: string
+                description: Payment description for user
+                maxLength: 255
+            required:
+              - wallet
+              - amount
+              - description
+      required:
+        - request_id
+        - data
+      x-examples:
+        example-1:
+          request_id: unique-string-like-uuid
+          data:
+            - wallet: '00001111222233334444'
+              amount: '16.999999'
+              description: Arrival from the referral system MediaCube Music
+    McPaymentResource:
+      type: object
+      x-examples:
+        example-1:
+          data:
+            request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
+            status: 2
+            err_msg: null
+        example-2:
+          data:
+            request_id: string
+            status: 3
+            err_msg: 3000
+      properties:
+        data:
+          type: object
+          properties:
+            request_id:
+              type: string
+            status:
+              type: integer
+            err_msg:
+              nullable: true
+      title: ''
+      description: ''
   securitySchemes:
     Client credentials:
       type: oauth2
@@ -541,8 +506,9 @@ components:
           refreshUrl: 'https://mcpay,io/oauth/token'
       description: Basic auth_code flow with redirect and callback
   examples: {}
+  requestBodies: {}
+  responses: {}
 tags:
-  - name: Auth
-  - name: User
+  - name: OAuth
   - name: Payments
 security: []

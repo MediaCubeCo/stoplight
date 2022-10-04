@@ -1,1 +1,1 @@
-# EzzyPay
+# MC Pay
