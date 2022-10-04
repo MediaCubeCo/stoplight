@@ -135,37 +135,24 @@ paths:
         - Auth code: []
       tags:
         - OAuth
-  /oauth/user/channels:
+  /oauth/user/balance:
     get:
-      summary: Channel Scope
+      summary: Balance Scope
       responses:
         '200':
           description: OK
-          headers: {}
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    youtube_id:
-                      type: string
-                    title:
-                      type: string
-                    published_at:
-                      type: string
-                      format: date
-                      example: '2020-05-12'
-                    views_count:
-                      type: number
-                    subscribers_count:
-                      type: number
-                    is_google_user_owner:
-                      type: boolean
-                    image:
-                      type: string
-      operationId: get-oauth-user-channels
+                type: object
+                properties:
+                  balance:
+                    type: string
+                  real_balance:
+                    type: string
+                  credit_balance:
+                    type: string
+      operationId: get-oauth-user-balance
       description: ''
       parameters:
         - schema:
@@ -175,9 +162,10 @@ paths:
           required: true
       security:
         - Auth code:
-            - user.channels
+            - user.common
       tags:
         - OAuth
+    parameters: []
   /oauth/user/common:
     get:
       summary: Common Scope
@@ -231,24 +219,37 @@ paths:
             - user.common
       tags:
         - OAuth
-  /oauth/user/balance:
+  /oauth/user/channels:
     get:
-      summary: Balance Scope
+      summary: Channel Scope
       responses:
         '200':
           description: OK
+          headers: {}
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  balance:
-                    type: string
-                  real_balance:
-                    type: string
-                  credit_balance:
-                    type: string
-      operationId: get-oauth-user-balance
+                type: array
+                items:
+                  type: object
+                  properties:
+                    youtube_id:
+                      type: string
+                    title:
+                      type: string
+                    published_at:
+                      type: string
+                      format: date
+                      example: '2020-05-12'
+                    views_count:
+                      type: number
+                    subscribers_count:
+                      type: number
+                    is_google_user_owner:
+                      type: boolean
+                    image:
+                      type: string
+      operationId: get-oauth-user-channels
       description: ''
       parameters:
         - schema:
@@ -258,10 +259,9 @@ paths:
           required: true
       security:
         - Auth code:
-            - user.common
+            - user.channels
       tags:
         - OAuth
-    parameters: []
   /payments:
     post:
       summary: Create payment
