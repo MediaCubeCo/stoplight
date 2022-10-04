@@ -13,7 +13,7 @@ servers:
 paths:
   /oauth/token:
     post:
-      summary: '[OAuth] Token'
+      summary: Token
       operationId: post-oauth-token
       responses:
         '200':
@@ -88,7 +88,7 @@ paths:
         - OAuth
   /oauth/user:
     get:
-      summary: '[OAuth] User'
+      summary: User
       responses:
         '200':
           description: OK
@@ -137,7 +137,7 @@ paths:
         - OAuth
   /oauth/user/channels:
     get:
-      summary: '[OAuth] Channel Scope'
+      summary: Channel Scope
       responses:
         '200':
           description: OK
@@ -180,7 +180,7 @@ paths:
         - OAuth
   /oauth/user/common:
     get:
-      summary: '[OAuth] Common Scope'
+      summary: Common Scope
       responses:
         '200':
           description: OK
@@ -233,7 +233,7 @@ paths:
         - OAuth
   /oauth/user/balance:
     get:
-      summary: '[OAuth] Balance Scope'
+      summary: Balance Scope
       responses:
         '200':
           description: OK
