@@ -78,8 +78,8 @@ $response = Http::asJson()
 
 ### Statuses
 
-- 2 - Успех
-- 3 - Ошибка
+- 2 - Success
+- 3 - Error
 
 ```json
 "data": {
