@@ -17,7 +17,7 @@ $query = http_build_query([
     'scope' => 'user.common user.channels user.balance',
 ]);
 
-return redirect('mp-stage.mediacube.dev/oauth/authorize/'.'?'.$query);
+return redirect('https://mp-stage.mediacube.dev/oauth/authorize/'.'?'.$query);
 ```
 
 ### Handle callback
