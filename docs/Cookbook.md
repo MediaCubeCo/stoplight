@@ -20,7 +20,7 @@ $query = http_build_query([
 return redirect('https://mp-stage.mediacube.dev/oauth/authorize/'.'?'.$query);
 ```
 
-### Handle callback
+### Issue authorization token
 
 ```php
 Http::asJson()
