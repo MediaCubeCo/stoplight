@@ -261,7 +261,7 @@ paths:
         - OAuth
   /payments:
     post:
-      summary: Create payment
+      summary: Create payout payment
       operationId: post-payments
       responses:
         '200':
@@ -274,7 +274,7 @@ paths:
           description: Your Access Token does not have access
         '422':
           description: Incorrect data
-      description: ''
+      description: The endpoint allows you to make payouts to users. Supports batch payout payments
       parameters:
         - schema:
             type: string
@@ -354,6 +354,52 @@ paths:
                   type: string
         description: ''
     parameters: []
+  /payments/debit:
+    post:
+      summary: Create debit payment
+      operationId: post-payments
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/McPaymentResource'
+        '401':
+          description: Your Access Token does not have access
+        '422':
+          description: Incorrect data
+      description: The endpoint allows you to debit money from users wallets. Supports batch debiting of money
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          required: true
+          description: 'Token from partner grant '
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          required: true
+          name: Content-Type
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+      tags:
+        - Payments
+      security:
+        - Client credentials: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/McPaymentRequest'
+    parameters: []
 components:
   schemas:
     Country:
@@ -420,6 +466,13 @@ components:
       x-stoplight:
         id: de2bq7lgdyjc8
       type: object
+      x-examples:
+        example-1:
+          request_id: unique-string-like-uuid
+          data:
+            - wallet: '00001111222233334444'
+              amount: '16.999999'
+              description: Arrival from the referral system MediaCube Music
       properties:
         request_id:
           type: string
@@ -437,7 +490,9 @@ components:
                 minLength: 16
                 maxLength: 16
               amount:
-                type: string
+                type: number
+                minimum: 0
+                format: float
               description:
                 type: string
                 description: Payment description for user
@@ -449,13 +504,6 @@ components:
       required:
         - request_id
         - data
-      x-examples:
-        example-1:
-          request_id: unique-string-like-uuid
-          data:
-            - wallet: '00001111222233334444'
-              amount: '16.999999'
-              description: Arrival from the referral system MediaCube Music
     McPaymentResource:
       type: object
       x-examples:
@@ -464,11 +512,19 @@ components:
             request_id: c02e79a2-d30c-46e3-b3dd-c0e6a987acf8
             status: 2
             err_msg: null
+            transactions:
+              - id: 1
+                invoice_path: /api/transactions/1/invoice
+              - id: 2
+                invoice_path: /api/transactions/2/invoice
         example-2:
           data:
             request_id: string
             status: 3
             err_msg: 3000
+            transactions: []
+      title: McPaymentResource
+      description: ''
       properties:
         data:
           type: object
@@ -478,9 +534,18 @@ components:
             status:
               type: integer
             err_msg:
+              type: integer
               nullable: true
-      title: ''
-      description: ''
+            transactions:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  invoice_path:
+                    type: string
+                    description: Invoice path to PDF file
   securitySchemes:
     Client credentials:
       type: oauth2
