@@ -1,1 +1,1 @@
-# MC Pay
+# mc payments api docs
