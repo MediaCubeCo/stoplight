@@ -405,10 +405,9 @@ components:
     Country:
       title: Country
       type: object
-      description: ''
       properties:
         id:
-          type: number
+          type: string
         youtube_id:
           type: string
         code:
