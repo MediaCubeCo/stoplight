@@ -400,6 +400,14 @@ paths:
             schema:
               $ref: '#/components/schemas/McPaymentRequest'
     parameters: []
+  /regional/ewrwe:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-regional-ewrwe
+      x-stoplight:
+        id: zaivu6xydno6l
 components:
   schemas:
     Country:
