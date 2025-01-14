@@ -147,3 +147,91 @@ $response = Http::asJson()
 }
 ```
 
+
+## Regional Payments
+
+### Issue payment token
+
+```php
+Http::asJson()
+  ->post('https://mp-stage.mediacube.dev/oauth/token', [
+      'grant_type' => 'partner',
+      'client_id' => 1,
+      'client_secret' => '<secret>',
+  ]);
+```
+
+### Create payout payment
+
+```php
+$headers = [
+  'Authorization' => 'Bearer <payment_token>',
+  'Content-Type' => 'application/json', 
+  'Accept' => 'application/json',
+];
+
+$requestData = [
+  'request_id' => 'c02e79a2-d30c-46e3-b3dd-c0e6a987acf8',
+  'data' => [
+      [
+        'amount' => '10.0000000001',
+        'wallet' => '1111222233334444',
+        'description' => 'Test payment 1',
+      ],
+      [
+        'amount' => '6.8',
+        'wallet' => '5555666677778888',
+        'description' => 'Test payment 2', 
+      ],
+  ],
+];
+
+$response = Http::asJson()
+      ->withHeaders($headers)
+      ->post('https://mp-stage.mediacube.dev/payments/regional', $requestData);
+```
+
+### Statuses
+
+- 2 - Success
+- 3 - Error
+
+```json
+"data": {
+  "request_id":"c02e79a2-d30c-46e3-b3dd-c0e6a987acf8",
+  "status": 2,
+  "err_msg": null,
+  "transactions": [
+    {
+      "id": 1,
+      "invoice_path": "/api/transactions/1/invoice"
+    },
+    {
+      "id": 2,
+      "invoice_path": "/api/transactions/2/invoice"
+    }
+}
+```
+
+### Errors
+
+- 3000 - Insufficient funds on your account, contact support
+- 4000 - An error has occurred, please contact support
+- 5000 - Debit payments are disabled for your account, please contact support
+- 6000 - Your account doesn't have payout payments
+- 7000 - Amount of payout payments is less then amount of debit payments
+- 8000 - User doesn't have enought money
+- 9000 - Regional partner not found
+- 10000 - Wallet is not active
+
+```json
+"data": {
+  "request_id":"c02e79a2-d30c-46e3-b3dd-c0e6a987acf8",
+  "status": 3,
+  "err_msg": 3000,
+  "company": [],
+  "transactions": [],
+  "oauth_client": [],
+}
+```
+
