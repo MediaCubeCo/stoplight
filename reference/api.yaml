@@ -403,11 +403,12 @@ paths:
   /regional/ewrwe:
     get:
       summary: Your GET endpoint
-      tags: []
       responses: {}
       operationId: get-regional-ewrwe
       x-stoplight:
         id: zaivu6xydno6l
+      tags:
+        - Regional Payments
 components:
   schemas:
     Country:
