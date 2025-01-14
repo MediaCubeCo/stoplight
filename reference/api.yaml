@@ -403,7 +403,8 @@ paths:
   /payments/regional:
     get:
       summary: Get regional payment
-      tags: []
+      tags:
+        - Regional Payments
       responses:
         '200':
           description: OK
