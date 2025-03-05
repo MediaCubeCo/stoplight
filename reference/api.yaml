@@ -3,8 +3,7 @@ info:
   title: McPay
   version: '1'
   description: McPay OAauth and McPayments docs
-  contact: {}
-  license: {}
+  termsOfService: ''
 servers:
   - url: 'https://mcpay.io'
     description: Production
@@ -83,7 +82,6 @@ paths:
                   code: hjgsfugdskhgvklundfluvhdfnlvhls
                   redirect_url: 'https://yourapp.com/endpoint'
         description: ''
-      description: ''
       tags:
         - OAuth
   /oauth/user:
@@ -109,22 +107,30 @@ paths:
                     type: string
                   wallet:
                     type: string
-                    description: кошелек пользователя (1)
+                    description: Default wallet account number
+                    deprecated: true
+                  wallets:
+                    x-stoplight:
+                      id: eivq9dww2cql7
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Wallet'
                   kyc_status:
                     type: number
                   is_confirmed:
                     type: boolean
-                    description: статус подтверждения почты (1)
+                    description: Mail confirmation status
                   is_company:
                     type: boolean
+                    description: Indicates whether the user represents a company (true) or an individual (false)
                   channels:
-                    type: string
+                    type: array
+                    items: {}
                   created_at:
                     type: string
                   country:
                     $ref: '#/components/schemas/Country'
       operationId: get-oauth-user
-      description: ''
       parameters:
         - schema:
             type: string
@@ -146,20 +152,42 @@ paths:
               schema:
                 type: object
                 properties:
+                  user_id:
+                    type: integer
+                    x-stoplight:
+                      id: wu721zh81bwkc
+                    example: 1
                   balance:
                     type: string
+                    description: Total balance (real_balance + credit_balance)
+                    example: '30'
                   real_balance:
                     type: string
+                    description: Balance of funds
+                    example: '20'
                   credit_balance:
                     type: string
+                    description: Balance of expresses
+                    example: '10'
+                  wallet:
+                    $ref: '#/components/schemas/Wallet'
       operationId: get-oauth-user-balance
-      description: ''
+      description: |-
+        Retrieving the user's wallet balance.
+        If the **wallet** parameter is not provided, the default wallet is used.
       parameters:
         - schema:
             type: string
           in: header
           name: Authorization
           required: true
+        - schema:
+            type: string
+            example: '1111222233334444'
+          in: query
+          allowEmptyValue: true
+          name: wallet
+          description: Account wallet number
       security:
         - Auth code: []
       tags:
@@ -195,12 +223,25 @@ paths:
                         format: uri
                       wallet:
                         type: string
+                        description: Default wallet account number
+                        deprecated: true
+                      wallets:
+                        type: array
+                        x-stoplight:
+                          id: 4jitlonbz5h8f
+                        items:
+                          $ref: '#/components/schemas/Wallet'
                       profile:
                         $ref: '#/components/schemas/Profile'
                       birthday:
                         type: string
+                        format: date
+                        example: '1995-07-13'
                       sex:
-                        type: boolean
+                        enum:
+                          - male
+                          - female
+                          - other
                       country_id:
                         type: number
                       country:
@@ -261,7 +302,7 @@ paths:
         - OAuth
   /payments:
     post:
-      summary: Create payout payment
+      summary: 'Create payout payment [v1]'
       operationId: post-payments
       responses:
         '200':
@@ -274,7 +315,10 @@ paths:
           description: Your Access Token does not have access
         '422':
           description: Incorrect data
-      description: The endpoint allows you to make payouts to users. Supports batch payout payments
+      description: |-
+        The endpoint allows you to make payouts to users. Supports batch payout payments.
+
+        Payouts are only allowed for **default** wallets. If you need to create a payment to other wallets, please use the [Create payout payment [v2]](reference/api.yaml/paths/~1payments~1v2~1payout/post)
       parameters:
         - schema:
             type: string
@@ -295,17 +339,31 @@ paths:
           in: header
           name: Accept
           required: true
-      tags:
-        - Payments
       security:
         - Client credentials: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/McPaymentRequest'
+              $ref: '#/components/schemas/McPaymentRequestV1'
+            examples:
+              Example 1:
+                value:
+                  request_id: unique-string-like-uuid
+                  data:
+                    - wallet: '00001111222233334444'
+                      amount: '16.99'
+                      description: Arrival from the referral system MediaCube Music
+                      date: '2025-02-02'
+                    - wallet: '11112222333344445555'
+                      amount: '12'
+                      description: Arrival from the referral system MediaCube Music
+                      date: '2025-03-03'
+      deprecated: true
+      tags:
+        - Payments V1
     get:
-      summary: Get payment
+      summary: 'Get payment [v1]'
       operationId: get-payments
       responses:
         '200':
@@ -319,8 +377,6 @@ paths:
         '404':
           description: Not Found
       description: ''
-      tags:
-        - Payments
       parameters:
         - schema:
             type: string
@@ -349,15 +405,20 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - request_id
               properties:
                 request_id:
                   type: string
         description: ''
+      tags:
+        - Payments V1
+      deprecated: true
     parameters: []
   /payments/debit:
     post:
       summary: Create debit payment
-      operationId: post-payments
+      operationId: post-payments-debit
       responses:
         '200':
           description: OK
@@ -391,20 +452,28 @@ paths:
           name: Accept
           required: true
       tags:
-        - Payments
+        - Payments V1
       security:
         - Client credentials: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/McPaymentRequest'
+              $ref: '#/components/schemas/McPaymentRequestV1'
+            examples:
+              Example 1:
+                value:
+                  request_id: stringstringstri
+                  data:
+                    - wallet: stringstringstri
+                      amount: 0
+                      description: string
     parameters: []
-  /payments/regional:
-    get:
-      summary: Get regional payment
+  /payments/v2/payout:
+    post:
+      summary: 'Create payout payment [v2]'
       tags:
-        - Regional Payments
+        - Payments V2
       responses:
         '200':
           description: OK
@@ -413,84 +482,103 @@ paths:
               schema:
                 $ref: '#/components/schemas/McPaymentResource'
         '401':
-          description: Unauthorized
-        '404':
-          description: Not Found
-      operationId: get-payments-regional
+          description: Your Access Token does not have access
+        '422':
+          description: Incorrect data
+      operationId: post-payments-v2-payout
       x-stoplight:
-        id: 6zorc8cxiszpt
+        id: rk861q33jlb3x
+      description: The endpoint allows you to make payouts to users. Supports batch payout payments
+      security:
+        - Client credentials: []
       parameters:
         - schema:
             type: string
+            example: Bearer <jwt-token>
           in: header
           name: Authorization
           description: 'Token from partner grant '
+          required: true
         - schema:
             type: string
+            example: application/json
           in: header
           name: Content-Type
+          required: true
         - schema:
             type: string
+            example: application/json
           in: header
           name: Accept
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/McPaymentRequestV2'
+            examples:
+              Example 1:
+                value:
+                  request_id: unique-string-like-uuid
+                  currency: USD
+                  region: cyprus
+                  data:
+                    - wallet: '00001111222233334444'
+                      amount: '16.99'
+                      description: Arrival from the referral system MediaCube Music
+                      date: '2025-02-02'
+                    - wallet: '11112222333344445555'
+                      amount: '12'
+                      description: Arrival from the referral system MediaCube Music
+                      date: '2025-03-03'
+  /payments/v2/status:
+    get:
+      summary: 'Get payment [v2]'
+      tags:
+        - Payments V2
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      operationId: get-payments-v2-status
+      x-stoplight:
+        id: 4y2cy7vg3bjey
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              required:
+                - request_id
               properties:
                 request_id:
                   type: string
                   x-stoplight:
-                    id: w9ez8egxe377c
-      security:
-        - Client credentials: []
-    post:
-      summary: Create regional payout
-      tags:
-        - Regional Payments
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/McPaymentResource'
-        '401':
-          description: Unauthorized
-        '403':
-          description: |-
-            - 3000 - Insufficient funds on your account, contact support
-            - 4000 - An error has occurred, please contact support
-            - 5000 - Debit payments are disabled for your account, please contact support
-            - 6000 - Your account doesn't have payout payments
-            - 7000 - Amount of payout payments is less then amount of debit payments
-            - 8000 - User doesn't have enought money
-            - 9000 - Regional partner not found
-            - 10000 - Wallet is not active
-      operationId: post-payments-regional
-      x-stoplight:
-        id: zmncz9qu66s2n
-      description: The endpoint allows you to make payouts to users. Supports batch payout payments
-      parameters:
-        - schema:
-            type: string
-          in: header
-          name: Authorization
-          description: 'Token from partner grant '
-        - schema:
-            type: string
-          in: header
-          name: Content-Type
-        - schema:
-            type: string
-          in: header
-          name: Accept
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/McPaymentRequest'
+                    id: v707jmvr0xmpd
 components:
   schemas:
     Country:
@@ -552,8 +640,37 @@ components:
           type: string
         company_name:
           type: string
-    McPaymentRequest:
-      title: McPaymentRequest
+    Wallet:
+      title: Wallet
+      x-stoplight:
+        id: oi76a0mujbspf
+      type: object
+      properties:
+        id:
+          type: number
+          x-stoplight:
+            id: nsrsjjvi85h72
+        region:
+          x-stoplight:
+            id: h2gas0yx8gmg8
+          enum:
+            - cyprus
+            - canada
+        currency:
+          x-stoplight:
+            id: gbwrw7458tfl0
+          description: 'Currency [ISO-3 Format](https://www.iso.org/iso-4217-currency-codes.html)'
+          enum:
+            - USD
+            - EUR
+        number:
+          type: integer
+          x-stoplight:
+            id: ka7yije5hvkrc
+          description: Wallet account number
+          example: 1111222233334444
+    McPaymentRequestV1:
+      title: McPaymentRequestV1
       x-stoplight:
         id: de2bq7lgdyjc8
       type: object
@@ -562,8 +679,16 @@ components:
           request_id: unique-string-like-uuid
           data:
             - wallet: '00001111222233334444'
-              amount: '16.999999'
+              amount: '16.99'
               description: Arrival from the referral system MediaCube Music
+              date: '2025-02-02'
+            - wallet: '11112222333344445555'
+              amount: '12'
+              description: Arrival from the referral system MediaCube Music
+              date: '2025-03-03'
+      required:
+        - request_id
+        - data
       properties:
         request_id:
           type: string
@@ -574,6 +699,10 @@ components:
           type: array
           items:
             type: object
+            required:
+              - wallet
+              - amount
+              - description
             properties:
               wallet:
                 type: string
@@ -584,17 +713,100 @@ components:
                 type: number
                 minimum: 0
                 format: float
+                exclusiveMaximum: false
+                exclusiveMinimum: false
               description:
                 type: string
                 description: Payment description for user
                 maxLength: 255
+              date:
+                type: string
+                x-stoplight:
+                  id: 03endfnm3fsml
+                format: date
+                description: 'Payment date. If not provided, the current date will be used.'
+    McPaymentRequestV2:
+      title: McPaymentRequestV2
+      x-stoplight:
+        id: qbxbl3102noi0
+      type: object
+      x-examples:
+        Example 1:
+          request_id: unique-string-like-uuid
+          currency: USD
+          region: cyprus
+          data:
+            - wallet: '00001111222233334444'
+              amount: '16.99'
+              description: Arrival from the referral system MediaCube Music
+              date: '2025-02-02'
+            - wallet: '11112222333344445555'
+              amount: '12'
+              description: Arrival from the referral system MediaCube Music
+              date: '2025-03-03'
+      required:
+        - request_id
+        - region
+        - currency
+        - data
+      properties:
+        request_id:
+          type: string
+          x-stoplight:
+            id: o25ppsqypfrfk
+          description: 'Unique string like UUIDv4 '
+        region:
+          x-stoplight:
+            id: 3r1yvc4nv6waa
+          enum:
+            - cyprus
+            - canada
+          description: Partner wallet account region
+        currency:
+          x-stoplight:
+            id: zhj6917di8jqm
+          description: 'Partner wallet account currency [ISO-3 Format](https://www.iso.org/iso-4217-currency-codes.html)'
+          enum:
+            - USD
+            - EUR
+        data:
+          type: array
+          x-stoplight:
+            id: eg7xwmw9m9jxg
+          items:
+            x-stoplight:
+              id: 6nzad5e2kocct
+            type: object
             required:
               - wallet
               - amount
               - description
-      required:
-        - request_id
-        - data
+            properties:
+              wallet:
+                type: string
+                x-stoplight:
+                  id: 5vg4ii9jwjcuc
+                description: McPay user's wallet
+                minLength: 16
+                maxLength: 16
+              amount:
+                type: number
+                x-stoplight:
+                  id: d4p1mhdiisltf
+                format: float
+                minimum: 0.01
+              description:
+                type: string
+                x-stoplight:
+                  id: z3or2kx7miw7b
+                description: Payment description for user
+                maxLength: 255
+              date:
+                type: string
+                x-stoplight:
+                  id: e2cph8ripv7l5
+                format: date
+                description: 'Payment date. If not provided, the current date will be used.'
     McPaymentResource:
       type: object
       x-examples:
