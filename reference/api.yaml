@@ -107,8 +107,11 @@ paths:
                     type: string
                   wallet:
                     type: string
-                    description: Default wallet account number
+                    description: |-
+                      Default wallet account number.
+                      > The default wallet corresponds to the wallet with **USD** currency and **cyprus** region
                     deprecated: true
+                    example: '1111222233334444'
                   wallets:
                     x-stoplight:
                       id: eivq9dww2cql7
@@ -175,6 +178,8 @@ paths:
       description: |-
         Retrieving the user's wallet balance.
         If the **wallet** parameter is not provided, the default wallet is used.
+
+        > The default wallet corresponds to the wallet with **USD** currency and **cyprus** region
       parameters:
         - schema:
             type: string
@@ -223,8 +228,11 @@ paths:
                         format: uri
                       wallet:
                         type: string
-                        description: Default wallet account number
+                        description: |-
+                          Default wallet account number
+                          > The default wallet corresponds to the wallet with **USD** currency and **cyprus** region
                         deprecated: true
+                        example: '1111222233334444'
                       wallets:
                         type: array
                         x-stoplight:
@@ -319,6 +327,8 @@ paths:
         The endpoint allows you to make payouts to users. Supports batch payout payments.
 
         Payouts are only allowed for **default** wallets. If you need to create a payment to other wallets, please use the [Create payout payment [v2]](reference/api.yaml/paths/~1payments~1v2~1payout/post)
+
+        > The default wallet corresponds to the wallet with **USD** currency and **cyprus** region
       parameters:
         - schema:
             type: string
