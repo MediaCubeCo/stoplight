@@ -55,7 +55,7 @@ sequenceDiagram
 #### Example Request:
 
 ```curl
-GET https://mp-stage.mediacube.dev/oauth/authorize?client_id=12345&redirect_uri=https://client/callback&response_type=code&scope=user.common
+GET https://mp-stage.mediacube.dev/oauth/authorize?client_id=12345&redirect_uri=https://example.com/client/callback&response_type=code&scope=user.common
 ```
 
 #### Example Response:
