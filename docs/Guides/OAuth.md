@@ -7,7 +7,7 @@ stoplight-id: xxf1peto7qas8
 
 ## Introduction
 
-This document describes the authorization process using the `authorization_code` grant type in OAuth 2.0. This method is used to obtain an access token after the user successfully authorizes the application.
+This document describes the authorization process using the `authorization_code` grant type in OAuth 2.0. This method is used to obtain an access token after the user successfully authorizes the application. Code samples can be found [here](docs/Cookbook.md), see `OAuth` section.
 
 ## `authorization_code` Grant Flow
 
@@ -34,37 +34,3 @@ sequenceDiagram
     Application->>AuthServer: Requests tokens (code)
     AuthServer->>Application: Returns access_token and refresh_token
 ```
-
-## API Endpoints
-
-### 1. Get authorization_code
-
-#### Path: /oauth/authorize
-
-#### Method: GET
-
-#### Parameters:
-
-| Parameter     |Description                                                       |
-| ------------- | ----------------------------------------------------------------- |
-| client_id     | The client's ID                                                   |
-| redirect_uri  | The redirect URI where the user will be sent after authorization. |
-| response_type | Must be **code**                                                  |
-| scope         | The requested permissions                                         |
-
-#### Example Request:
-
-```curl
-GET https://mp-stage.mediacube.dev/oauth/authorize?client_id=12345&redirect_uri=https://example.com/client/callback&response_type=code&scope=user.common
-```
-
-#### Example Response:
-
-```curl
-HTTP/1.1 302 Found
-Location: https://example.com/client/callback?code=AUTH_CODE
-```
-
-### 2. [Exchange authorization_code for tokens](reference/api.yaml/paths/~1oauth~1token/post)
-
-### 3. [Exchange token for User resource](reference/api.yaml/paths/~1oauth~1user/get)
