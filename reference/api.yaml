@@ -60,8 +60,6 @@ paths:
                   type: string
                 client_secret:
                   type: string
-                scopes:
-                  type: string
                 code:
                   type: string
                 redirect_uri:
