@@ -66,19 +66,18 @@ paths:
                   type: string
                   format: uri
             examples:
-              partner:
-                value:
-                  grant_type: partner
-                  client_id: '1'
-                  client_secret: secret
               authorization_code:
                 value:
                   grant_type: authorization_code
                   client_id: '1'
                   client_secret: secret
-                  scopes: user.channels user.common user.contacts
                   code: hjgsfugdskhgvklundfluvhdfnlvhls
                   redirect_url: 'https://yourapp.com/endpoint'
+              partner:
+                value:
+                  grant_type: partner
+                  client_id: '1'
+                  client_secret: secret
         description: ''
       tags:
         - OAuth
