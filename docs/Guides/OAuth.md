@@ -16,7 +16,7 @@ This document describes the authorization process using the `authorization_code`
 1. The **Application** redirects the user to the authorization server.
 2. The **User** logs in and approves the request on the authorization server.
 3. The **Authorization Server** redirects the user back to the client with an `code`.
-4. The **Application** exchanges the `code` for an `access_token` and optionally a `refresh_token`.
+4. The **Application** exchanges the `code` for an `access_token`.
 5. The **Authorization Server** returns the tokens to the client.
 
 ### Sequence Diagram
