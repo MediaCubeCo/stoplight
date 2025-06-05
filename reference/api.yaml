@@ -768,6 +768,7 @@ components:
           enum:
             - cyprus
             - canada
+            - kazakhstan
           description: Partner wallet account region
         currency:
           x-stoplight:
