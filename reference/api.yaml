@@ -530,11 +530,11 @@ paths:
                   currency: USD
                   region: cyprus
                   data:
-                    - wallet: '00001111222233334444'
+                    - wallet: '0000111122223333'
                       amount: '16.99'
                       description: Arrival from the referral system MediaCube Music
                       date: '2025-02-02'
-                    - wallet: '11112222333344445555'
+                    - wallet: '0000111122223333'
                       amount: '12'
                       description: Arrival from the referral system MediaCube Music
                       date: '2025-03-03'
@@ -671,11 +671,11 @@ components:
             - USD
             - EUR
         number:
-          type: integer
+          type: string
           x-stoplight:
             id: ka7yije5hvkrc
           description: Wallet account number
-          example: 1111222233334444
+          example: '1111222233334444'
     McPaymentRequestV1:
       title: McPaymentRequestV1
       x-stoplight:
