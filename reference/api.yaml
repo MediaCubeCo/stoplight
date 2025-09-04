@@ -2,7 +2,19 @@ openapi: 3.0.0
 info:
   title: McPay
   version: '1'
-  description: McPay OAauth and McPayments docs
+  description: |-
+    ## Overview
+    With our API you can execute B2P payments, transferring funds from companies to users, and support withdrawals by creating Payment Requests.
+
+    ## Making API Calls
+    In order to perform any API call, the access token must be obtained. To do this, you are required to send an HTTP request to the [Initial Authentication](reference/api.yaml/paths/~1oauth~1token/post) endpoint.
+
+    As a result, you will receive an access token that will be used to authenticate your requests.
+
+    ## Asynchronous Workflow
+    MC Pay implements an Asynchronous Workflow, a type of communication between technological components that allows MC Pay to be responsive to different events, rather than having to wait until the requested tasks are finished.
+
+    For example, when MC Pay receives a request to create a Bulk Payment Request, the Partner is immediately notified that the request has been accepted. In the meantime, MC Pay queues the request.
   termsOfService: ''
 servers:
   - url: 'https://mcpay.io'
