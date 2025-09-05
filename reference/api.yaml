@@ -380,7 +380,7 @@ paths:
                       date: '2025-03-03'
       deprecated: true
       tags:
-        - Payments V1
+        - B2P Payments / v1
     get:
       summary: 'Get payment [v1]'
       operationId: get-payments
@@ -431,7 +431,7 @@ paths:
                   type: string
         description: ''
       tags:
-        - Payments V1
+        - B2P Payments / v1
       deprecated: true
     parameters: []
   /payments/debit:
@@ -471,7 +471,7 @@ paths:
           name: Accept
           required: true
       tags:
-        - Payments V1
+        - B2P Payments / v1
       security:
         - Client credentials: []
       requestBody:
@@ -492,7 +492,7 @@ paths:
     post:
       summary: 'Create payout payment [v2]'
       tags:
-        - Payments V2
+        - B2P Payments / v2
       responses:
         '200':
           description: OK
@@ -554,7 +554,7 @@ paths:
     get:
       summary: 'Get payment [v2]'
       tags:
-        - Payments V2
+        - B2P Payments / v2
       responses:
         '200':
           description: OK
@@ -895,5 +895,6 @@ components:
   responses: {}
 tags:
   - name: OAuth
-  - name: Payments
+  - name: B2P Payments / v1
+  - name: B2P Payments / v2
 security: []
