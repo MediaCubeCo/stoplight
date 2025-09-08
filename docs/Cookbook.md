@@ -131,18 +131,6 @@ $response = Http::asJson()
 }
 ```
 
-### Errors
-
-- 3000 - Insufficient funds on your account, contact support
-- 4000 - An error has occurred, please contact support
-- 5000 - Debit payments are disabled for your account, please contact support
-- 6000 - Your account doesn't have payout payments for debit payments
-- 7000 - Amount of payout payments is less then amount of debit payments
-- 8000 - User doesn't have enought money for debit
-- 9000 - B2B Partner not found
-- 10000 - Partner wallet not found
-- 11000 - Partner wallet is unavailable
-
 ```json
 "data": {
   "request_id":"c02e79a2-d30c-46e3-b3dd-c0e6a987acf8",

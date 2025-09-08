@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: McPay
+  title: MC Pay
   version: '1'
   description: |-
     ## Overview
@@ -358,8 +358,6 @@ paths:
           in: header
           name: Accept
           required: true
-      security:
-        - Client credentials: []
       requestBody:
         content:
           application/json:
@@ -550,6 +548,7 @@ paths:
                       amount: '12'
                       description: Arrival from the referral system MediaCube Music
                       date: '2025-03-03'
+        description: ''
   /payments/v2/status:
     get:
       summary: 'Get payment [v2]'
@@ -598,6 +597,1619 @@ paths:
                   type: string
                   x-stoplight:
                     id: v707jmvr0xmpd
+      description: ''
+  /payment-requests/v1/payment-methods:
+    get:
+      summary: Get Payment Methods
+      tags:
+        - Payment Requests
+      operationId: get-payment-requests-v1-payment-methods
+      x-stoplight:
+        id: 9a7z72127b96d
+      description: Provides a way to retrieve available payment methods.
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: 'Token from partner grant '
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+      security:
+        - Client credentials: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - region
+                - currency
+              properties:
+                region:
+                  x-stoplight:
+                    id: dm1anm9uqd1g7
+                  description: Partner wallet account region
+                  enum:
+                    - cyprus
+                    - canada
+                    - kazakhstan
+                currency:
+                  x-stoplight:
+                    id: l1tuy9klrxnhi
+                  description: 'Partner wallet account currency [ISO-3 Format](https://www.iso.org/iso-4217-currency-codes.html)'
+                  enum:
+                    - USD
+                    - EUR
+      responses:
+        '200':
+          description: A successful response will contain a list of available payment methods.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: array
+                    x-stoplight:
+                      id: vfhs2k83zso0l
+                    items:
+                      x-stoplight:
+                        id: rvb57uq43qtux
+                      type: object
+                      required:
+                        - id
+                        - name
+                        - category
+                      properties:
+                        id:
+                          type: integer
+                          x-stoplight:
+                            id: rmttffxqeobv7
+                        name:
+                          type: string
+                          x-stoplight:
+                            id: mi6axe3mb5i7f
+                        category:
+                          x-stoplight:
+                            id: bnzkwfa8kv7p9
+                          enum:
+                            - bank_transfer
+                            - card_transfer
+                            - online_wallet
+                            - crypto
+              examples:
+                Example 1:
+                  value:
+                    data:
+                      - id: 1
+                        name: To an account in EUR
+                        category: bank_transfer
+                      - id: 2
+                        name: To a card in USD
+                        category: card_transfer
+                      - id: 3
+                        name: WebMoney – USD
+                        category: online_wallet
+                      - id: 4
+                        name: Tether ERC20
+                        category: crypto
+        '401':
+          description: Unauthorized
+        '422':
+          description: Incorrect data
+  /payment-requests/v1/payment-methods/fields:
+    post:
+      summary: Get Payment Method Fields
+      tags:
+        - Payment Requests
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: 6yjjknp623xlp
+                    properties:
+                      field_1:
+                        type: object
+                        x-stoplight:
+                          id: vdomqgmf9mfmp
+                        required:
+                          - type
+                          - title
+                          - help_text
+                          - dynamic
+                        properties:
+                          type:
+                            x-stoplight:
+                              id: p4ulhqcjvcx21
+                            enum:
+                              - text
+                              - select
+                              - date
+                              - num
+                              - toggle
+                          title:
+                            type: string
+                            x-stoplight:
+                              id: 72e1n1zo4c21a
+                          help_text:
+                            type: string
+                            x-stoplight:
+                              id: i87fmc9lybnhu
+                            description: Description of field
+                          dynamic:
+                            type: boolean
+                            x-stoplight:
+                              id: 06jf4wg4dws7q
+                            description: 'if true, then fields may differ when it is changed'
+              examples:
+                Example 1 - Fields for method Bank Transfer:
+                  value:
+                    data:
+                      country:
+                        type: select
+                        title: Country
+                        help_text: Country of the receiving bank
+                        dynamic: true
+                        options:
+                          AL: Albania
+                          DZ: Algeria
+                          AD: Andorra
+                      beneficiary_name:
+                        type: text
+                        title: Beneficiary's name
+                        help_text: Full name of the recipient
+                        dynamic: false
+                        is_uppercase: false
+                      is_fast:
+                        type: toggle
+                        title: Quick Transfer
+                        help_text: Receive money in 2 hours instead of 2 days
+                        dynamic: false
+                Example 2 - Fields for method Card Transfer:
+                  value:
+                    data:
+                      country:
+                        type: select
+                        title: Country
+                        help_text: null
+                        dynamic: false
+                        options:
+                          AL: Albania
+                          DZ: Algeria
+                          AD: Andorra
+                      name_on_card:
+                        type: text
+                        title: Name on card
+                        help_text: null
+                        dynamic: false
+                        is_uppercase: true
+                      card_number:
+                        type: text
+                        title: Card number
+                        help_text: null
+                        dynamic: false
+                        is_uppercase: false
+                      expiration_date:
+                        type: text
+                        title: Card expiry date
+                        help_text: null
+                        dynamic: false
+                        is_uppercase: false
+                Example 3 - Fields for method Crypto Transfer:
+                  value:
+                    data:
+                      wallet_address:
+                        type: text
+                        title: Wallet address
+                        help_text: null
+                        dynamic: false
+                        is_uppercase: false
+        '401':
+          description: Unauthorized
+        '422':
+          description: Incorrect data
+      operationId: get-payment-requests-v1-payment-methods-fields
+      x-stoplight:
+        id: ca6tmwetr9b3g
+      description: |-
+        Provides a way to retrieve associated required fields based on specified query parameters and fields required for each payment method.
+
+        > Some payment methods may have different required fields depending on the request query **identity** field. Use the request without the **identity** field first to check if the result contains a field with the **dynamic** flag. And then pass the field **identity** to get the new required fields.
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          required: true
+          description: 'Token from partner grant '
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - region
+                - currency
+                - payment_method_id
+              properties:
+                region:
+                  x-stoplight:
+                    id: roy7jktj9uamw
+                  description: Partner wallet account region
+                  enum:
+                    - cyprus
+                    - canada
+                    - kazakhstan
+                currency:
+                  x-stoplight:
+                    id: 468g1w58m1qmg
+                  description: 'Partner wallet account currency [ISO-3 Format](https://www.iso.org/iso-4217-currency-codes.html)'
+                  enum:
+                    - USD
+                    - EUR
+                payment_method_id:
+                  type: integer
+                  x-stoplight:
+                    id: tb9zps74c70f8
+                  description: Payment method ID
+                identity:
+                  type: object
+                  x-stoplight:
+                    id: 4gpqh7cfdorb7
+    parameters: []
+  /payment-requests/v1/templates:
+    post:
+      summary: Create template
+      tags:
+        - Payment Requests
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Template'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Incorrect data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Template'
+      operationId: post-payment-requests-v1-templates
+      x-stoplight:
+        id: f36289p0k545c
+      description: Before creating a Payment Request you need to create a transfer template.
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: 'Token from partner grant '
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - region
+                - currency
+                - payment_method_id
+                - identity
+                - title
+              properties:
+                region:
+                  x-stoplight:
+                    id: cplizxt83xs9n
+                  enum:
+                    - cyprus
+                    - canada
+                    - kazakhstan
+                  description: Partner wallet account region
+                currency:
+                  x-stoplight:
+                    id: bse4dsvzf448z
+                  description: 'Partner wallet account currency [ISO-3 Format](https://www.iso.org/iso-4217-currency-codes.html)'
+                  enum:
+                    - USD
+                    - EUR
+                payment_method_id:
+                  type: integer
+                  x-stoplight:
+                    id: fgcfx9li2xqzx
+                  description: Payment method ID
+                identity:
+                  type: object
+                  x-stoplight:
+                    id: kc3zhplbjnx49
+                  description: 'Template detalis, you can get required payment method fields [here](reference/api.yaml/paths/~1payment-requests~1v1~1payment-methods~1fields/post)'
+                title:
+                  type: string
+                  x-stoplight:
+                    id: 9puseqohsm0th
+    get:
+      summary: Get templates
+      tags:
+        - Payment Requests
+      responses:
+        '200':
+          description: A successful response will contain a list of available templates.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - links
+                  - meta
+                  - path
+                  - per_page
+                  - to
+                  - total
+                properties:
+                  data:
+                    x-stoplight:
+                      id: 7kjrzm85zg0y6
+                    type: array
+                    items:
+                      x-stoplight:
+                        id: z7e63lhkgqhqu
+                      type: object
+                      required:
+                        - ''
+                      properties:
+                        '':
+                          $ref: '#/components/schemas/Template'
+                  links:
+                    type: array
+                    x-stoplight:
+                      id: cbsp5fzliznl8
+                    description: |
+                      A list of URLs leading to the corresponding pages.
+                    items:
+                      x-stoplight:
+                        id: rln3tah2er2gv
+                      type: object
+                      required:
+                        - url
+                        - label
+                        - active
+                      properties:
+                        url:
+                          type: string
+                          x-stoplight:
+                            id: i6z17fb2z1izf
+                        label:
+                          type: string
+                          x-stoplight:
+                            id: azno08e8vlbqd
+                          description: The number of the page.
+                        active:
+                          type: boolean
+                          x-stoplight:
+                            id: 5h2h2m73g3l4c
+                          description: Identifies the current page.
+                  meta:
+                    type: object
+                    x-stoplight:
+                      id: egphg03xtpj9j
+                    required:
+                      - current_page
+                      - from
+                      - last_page
+                    properties:
+                      current_page:
+                        type: integer
+                        x-stoplight:
+                          id: gdhnbbxflcrtp
+                        description: Number of the current page in the response pagination.
+                      from:
+                        type: integer
+                        x-stoplight:
+                          id: ktyx8qd00begv
+                        description: The first entry on the current page.
+                      last_page:
+                        type: integer
+                        x-stoplight:
+                          id: k4k1vbmcomk9a
+                        description: Number of the last page in the response pagination.
+                  path:
+                    type: string
+                    x-stoplight:
+                      id: u8gcwfwfzhtbh
+                    description: Base path of the method.
+                  per_page:
+                    type: integer
+                    x-stoplight:
+                      id: kir6jncm1963w
+                    description: Number of entries per page. Partner can manage the entries per page.
+                    default: 20
+                    minimum: 1
+                    maximum: 100
+                  to:
+                    type: integer
+                    x-stoplight:
+                      id: sykk83674kuyi
+                    description: The last entry on the current page.
+                  total:
+                    type: integer
+                    x-stoplight:
+                      id: zonimhwrx708h
+                    description: Total number of entries in the response.
+        '401':
+          description: Unauthorized
+        '422':
+          description: Incorrect data
+      operationId: get-payment-requests-v1-templates
+      x-stoplight:
+        id: 1liw9tblw2op9
+      description: Provides a way to retrieve available templates.
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          required: true
+          description: 'Token from partner grant '
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - region
+                - currency
+                - payment_method_id
+              properties:
+                region:
+                  x-stoplight:
+                    id: ktfcont6utukj
+                  enum:
+                    - cyprus
+                    - canada
+                    - kazakhstan
+                  description: Partner wallet account region
+                currency:
+                  type: string
+                  x-stoplight:
+                    id: 59zf8gpfank75
+                  description: 'Partner wallet account currency [ISO-3 Format](https://www.iso.org/iso-4217-currency-codes.html)'
+                payment_method_id:
+                  type: integer
+                  x-stoplight:
+                    id: gxduecn8pnb5z
+                  description: Payment method ID
+                page:
+                  type: integer
+                  x-stoplight:
+                    id: l9z160ntcxctn
+                  description: |
+                    Use this parameter to specify the desired page number
+                per_page:
+                  type: integer
+                  x-stoplight:
+                    id: td2hwls4zvwbz
+                  description: The number of items to return per page
+    parameters: []
+  '/payment-requests/v1/templates/{templateId}':
+    parameters:
+      - schema:
+          type: string
+        name: templateId
+        in: path
+        required: true
+    get:
+      summary: Request Template Information
+      tags:
+        - Payment Requests
+      responses:
+        '200':
+          description: A successful response will contain the following dataset for the template.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Template'
+        '404':
+          description: Not Found
+      operationId: get-payment-requests-v1-templates-templateId
+      x-stoplight:
+        id: 38v3gdnbhjlaz
+      description: Use this method to request information about a specific template.
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: 'Token from partner grant '
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+    delete:
+      summary: Delete Template
+      tags:
+        - Payment Requests
+      responses:
+        '204':
+          description: |
+            Will respond with HTTP 204 No Content if the operation was successful.
+        '404':
+          description: Not Found
+      operationId: delete-payment-requests-v1-templates-templateId
+      x-stoplight:
+        id: guv020jidb2z5
+      description: Use this method to delete a specific template.
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: 'Token from partner grant '
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+  /payment-requests/v1/calculate:
+    get:
+      summary: Calculate Payment Request
+      tags:
+        - Payment Requests
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - withdraw
+                  - payment
+                properties:
+                  withdraw:
+                    type: object
+                    x-stoplight:
+                      id: qgqluw629d1f9
+                    required:
+                      - currency
+                      - amount
+                      - fee
+                      - total_amount
+                    description: Information about the amount withdrawn from the Partner account.
+                    properties:
+                      currency:
+                        type: string
+                        x-stoplight:
+                          id: 0lu1pwx7lpfdn
+                        description: currency of withdrawal.
+                      amount:
+                        type: string
+                        x-stoplight:
+                          id: ra0im9syog8bb
+                        description: amount without fees.
+                      fee:
+                        type: string
+                        x-stoplight:
+                          id: o0tn8a94q3wp8
+                        description: withdrawal fee.
+                      total_amount:
+                        type: string
+                        x-stoplight:
+                          id: b5jj3qy8is349
+                        description: total amount to be withdrawn (including fee).
+                  exchange:
+                    type: object
+                    x-stoplight:
+                      id: 19bmkw8lzio0r
+                    description: 'Details of the currency exchange, if conversion is required. May be omitted if no exchange takes place.'
+                    properties:
+                      currency:
+                        type: string
+                        x-stoplight:
+                          id: 6as8xtuaahv0j
+                        description: currency after exchange.
+                      rate:
+                        type: string
+                        x-stoplight:
+                          id: i4kiucnu693kf
+                        description: exchange rate.
+                      amount:
+                        type: string
+                        x-stoplight:
+                          id: 9zjt7bx8y814d
+                        description: exchanged amount without fees.
+                      fee:
+                        type: string
+                        x-stoplight:
+                          id: 8crvqq97nzvqn
+                        description: exchange fee.
+                      total_amount:
+                        type: string
+                        x-stoplight:
+                          id: cxsdlcc2iajcw
+                        description: total exchanged amount (including fee).
+                  payment:
+                    type: object
+                    x-stoplight:
+                      id: xn35lynj0g58s
+                    description: Final payment details after withdrawal and possible exchange.
+                    required:
+                      - currency
+                      - amount
+                      - fee
+                    properties:
+                      currency:
+                        type: string
+                        x-stoplight:
+                          id: 5u32osz7on8i2
+                        description: payment currency.
+                      amount:
+                        type: string
+                        x-stoplight:
+                          id: pboz9a7q3uwzp
+                        description: payment amount without fee.
+                      fee:
+                        type: string
+                        x-stoplight:
+                          id: s2o276hq4f7z6
+                        description: payment fee.
+              examples:
+                Example 1 - Calculation with exchange:
+                  value:
+                    withdraw:
+                      currency: USD
+                      amount: '100.00'
+                      fee: '0.00'
+                      total_amount: '100.00'
+                    exchange:
+                      currency: USDTE
+                      rate: '1'
+                      amount: '85'
+                      fee: '15'
+                      total_amount: '100'
+                    payment:
+                      currency: USDTE
+                      amount: '85'
+                      fee: '15'
+                Example 2 - Calculation without exchange:
+                  value:
+                    withdraw:
+                      currency: EUR
+                      amount: '100.00'
+                      fee: '50.00'
+                      total_amount: '150.00'
+                    exchange: null
+                    payment:
+                      currency: EUR
+                      amount: '100.00'
+                      fee: '150.00'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+        '422':
+          description: Incorrect data
+      operationId: get-payment-requests-v1-calculate
+      x-stoplight:
+        id: 990goccslspe6
+      description: Use this method to get a preliminary Payment Request calculation.
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          required: true
+          description: 'Token from partner grant '
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - template_id
+                - amount
+              properties:
+                template_id:
+                  type: string
+                  x-stoplight:
+                    id: syn1xl8fa3uxd
+                  description: Template ID
+                amount:
+                  type: number
+                  x-stoplight:
+                    id: mpx3ulihnpzow
+                  description: Withdrawal amount
+  /payment-requests/v1/single:
+    post:
+      summary: Create Single Payment Request
+      tags:
+        - Payment Requests
+      responses:
+        '200':
+          description: |-
+            The response contains two objects:
+
+            - **payout** - a payout entity (shared between single and bulk requests).
+            - **payment_request** - the created payment request with its details.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: 3emn7diipkq65
+                    description: contains payout details and the created payment request.
+                    required:
+                      - payout
+                      - payment_request
+                    properties:
+                      payout:
+                        type: object
+                        x-stoplight:
+                          id: tjm7hh5rpsdc2
+                        description: Represents the created payout batch. This object is common to both **single** and **bulk** requests.
+                        required:
+                          - id
+                          - request_id
+                          - status
+                          - err_msg
+                        properties:
+                          id:
+                            type: integer
+                            x-stoplight:
+                              id: 9v9ln7eggrz27
+                            description: internal payout ID.
+                          request_id:
+                            type: string
+                            x-stoplight:
+                              id: jatn4vc2u4wlf
+                            description: internal unique identifier of the payout request.
+                          status:
+                            type: integer
+                            x-stoplight:
+                              id: 6o4zzln4astce
+                            description: current payout status
+                          err_msg:
+                            type: string
+                            x-stoplight:
+                              id: gp8q19rhy9r8h
+                            description: 'error code if the payout failed, otherwise null'
+                      payment_request:
+                        type: object
+                        x-stoplight:
+                          id: wysqyz8s9gtyr
+                        required:
+                          - id
+                          - template_id
+                          - withdraw
+                          - payment_purpose
+                          - status
+                        description: Contains the newly created payment request.
+                        properties:
+                          id:
+                            type: integer
+                            x-stoplight:
+                              id: 47i5qdl9f6m6n
+                            description: internal payment request ID.
+                          template_id:
+                            type: number
+                            x-stoplight:
+                              id: 14fcx6uqomfnd
+                            description: ID of the request template used for creation.
+                          withdraw:
+                            type: object
+                            x-stoplight:
+                              id: 6pu2yc0q9dlhx
+                            required:
+                              - currency
+                              - amount
+                              - fee
+                            description: withdrawal details.
+                            properties:
+                              currency:
+                                type: string
+                                x-stoplight:
+                                  id: g6pikrh222ilg
+                                description: withdrawal currency.
+                              amount:
+                                type: string
+                                x-stoplight:
+                                  id: 6zzosuzw53ydn
+                                description: withdrawal amount without fee.
+                              fee:
+                                type: string
+                                x-stoplight:
+                                  id: k7782f782vz58
+                                description: withdrawal fee.
+                          payment_purpose:
+                            type: string
+                            x-stoplight:
+                              id: 4yrhoegmljrm9
+                            description: optional purpose of the payment.
+                          status:
+                            type: string
+                            x-stoplight:
+                              id: seennjcy4l3le
+                            description: current status of the payment request
+              examples:
+                Example 1:
+                  value:
+                    data:
+                      payout:
+                        id: 26922
+                        request_id: e9a70fde-c218-4bda-8bbf-8ef6942fba75
+                        status: 2
+                        err_msg: null
+                      payment_request:
+                        id: 133199
+                        template_id: 76678
+                        withdraw:
+                          currency: USD
+                          amount: '90'
+                          fee: '0'
+                        payment_purpose: null
+                        status: new
+                        created_at: '2025-09-08T08:18:09+00:00'
+                        updated_at: '2025-09-08T08:18:09+00:00'
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+        '422':
+          description: Incorrect data
+      operationId: post-payment-requests-v1-single
+      x-stoplight:
+        id: txcwalicey6tt
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: 'Token from partner grant '
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - template_id
+                - request_id
+              properties:
+                amount:
+                  type: number
+                  x-stoplight:
+                    id: mqu08epogzkv4
+                  description: Withdrawal amount
+                  format: float
+                template_id:
+                  type: string
+                  x-stoplight:
+                    id: m5w3klub8n1vn
+                  description: Template ID
+                request_id:
+                  type: string
+                  x-stoplight:
+                    id: o3ttdg2nhwcjv
+                  description: Unique string like UUIDv4
+            examples:
+              Example 1:
+                value:
+                  amount: 90
+                  template_id: 76678
+                  request_id: '11112222333346045'
+        description: Creates a new Payment Request. Both validation and transaction creation are performed **synchronously**.
+      description: |
+        This endpoint is used to create a new Payment Request.
+
+        It provides a way to initiate a transaction with all required details in a **single** request.
+
+        ###### Processing
+
+        Validation of request parameters is performed immediately.
+
+        If validation passes, the payment transaction is created **synchronously** within the same call.
+
+        The response contains the details of the newly created Payment Request.
+  /payment-requests/v1/bulk:
+    post:
+      summary: Create Bulk Payment Requests
+      tags:
+        - Payment Requests
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: bntqupmsf75w7
+                    required:
+                      - payout
+                    properties:
+                      payout:
+                        type: object
+                        x-stoplight:
+                          id: wnycve0690tlg
+                        required:
+                          - id
+                          - request_id
+                          - status
+                          - err_msg
+                        description: Represents the created payout batch. This object is common to both **single** and **bulk** requests.
+                        properties:
+                          id:
+                            type: integer
+                            x-stoplight:
+                              id: v7fthppcssf0e
+                            description: internal payout ID.
+                          request_id:
+                            type: string
+                            x-stoplight:
+                              id: zej9pmw2hdcbh
+                            description: internal unique identifier of the payout request.
+                          status:
+                            type: integer
+                            x-stoplight:
+                              id: stjyjlr2eeat4
+                            description: current payout status
+                          err_msg:
+                            type: integer
+                            x-stoplight:
+                              id: a2mpyq4kop042
+                            description: 'error code if the payout failed, otherwise null'
+              examples:
+                Example 1:
+                  value:
+                    data:
+                      payout:
+                        id: 26923
+                        request_id: 7caf32d4-1ad8-485b-8d46-bcb2980a8f2e
+                        status: 1
+                        err_msg: null
+        '400':
+          description: Bad Request
+        '403':
+          description: Forbidden
+        '422':
+          description: Incorrect data
+      operationId: post-payment-requests-v1-bulk
+      x-stoplight:
+        id: 2bkvkku1qdzpo
+      description: |-
+        The **bulk** method is used to submit batches of up to 50 payments to the MC Pay system.
+
+        Validation is performed in two stages:
+
+        **Synchronous validation** — executed immediately on request submission. This checks the structural integrity of the payload and whether all required fields conform to their format and type restrictions. If these checks fail, the request is rejected and no batch is created.
+
+        **Asynchronous validation** — executed after the batch has been accepted. These checks include business rules such as sufficient funds, template availability, account status, and other per-payment validations. Failures at this stage are reflected in the processing results of individual payments, but do not cause the entire request to fail.
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: 'Token from partner grant '
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - region
+                - currency
+                - payment_method_id
+                - payments
+              properties:
+                region:
+                  x-stoplight:
+                    id: rpgp24wr3prlt
+                  enum:
+                    - cyprus
+                    - canada
+                    - kazakhstan
+                  description: Partner wallet account region
+                currency:
+                  x-stoplight:
+                    id: ja6grw44h0kgk
+                  enum:
+                    - USD
+                    - EUR
+                  description: 'Partner wallet account currency [ISO-3 Format](https://www.iso.org/iso-4217-currency-codes.html)'
+                payment_method_id:
+                  type: integer
+                  x-stoplight:
+                    id: 3rvm7zkts5y3q
+                  description: Payment method ID
+                payments:
+                  type: array
+                  x-stoplight:
+                    id: 2kemk52oxg402
+                  items:
+                    x-stoplight:
+                      id: duwn9mbyi8rlf
+                    type: object
+                    required:
+                      - request_id
+                      - template_id
+                      - amount
+                    properties:
+                      request_id:
+                        type: string
+                        x-stoplight:
+                          id: vxwdj470jyfyc
+                        description: Unique string like UUIDv4
+                      template_id:
+                        type: integer
+                        x-stoplight:
+                          id: fpifqovsjb25j
+                        description: Template ID
+                      amount:
+                        type: number
+                        x-stoplight:
+                          id: mscrq0y2tqhhk
+                        description: Withdrawal amount
+                        format: float
+            examples:
+              Example 1:
+                value:
+                  currency: USD
+                  region: cyprus
+                  payment_method_id: 77
+                  payments:
+                    - request_id: '11112222333344551'
+                      template_id: 76678
+                      amount: 100
+                    - request_id: '11112222333344552'
+                      template_id: 76679
+                      amount: 100
+  /payment-requests/v1/status:
+    get:
+      summary: Get Payment Request Status
+      tags:
+        - Payment Requests
+      responses:
+        '200':
+          description: |-
+            Retrieves both the draft and the finalized Payment Request.
+
+            The **draft_payment_request** is always created and is especially useful if an error occurs, since it contains the error code.
+
+            The **payment_request** object appears only if the request was successfully validated and processed.
+
+            > The fields **exchange** and **payment** are included in the response only when the payment_request.status is "success".
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: bj91v85l2s7d0
+                    required:
+                      - draft_payment_request
+                      - payment_request
+                    description: Wrapper containing draft and final payment request details.
+                    properties:
+                      draft_payment_request:
+                        type: object
+                        x-stoplight:
+                          id: q5j7kxk6zem2o
+                        required:
+                          - id
+                          - request_id
+                          - payout_id
+                          - status
+                          - err_msg
+                        description: Always present.
+                        properties:
+                          id:
+                            type: integer
+                            x-stoplight:
+                              id: m92vj0htd6url
+                            description: internal draft ID.
+                          request_id:
+                            type: string
+                            x-stoplight:
+                              id: s5note3qlvbgh
+                            description: unique identifier associated with the draft.
+                          payout_id:
+                            type: integer
+                            x-stoplight:
+                              id: tlyz7apsunj43
+                            description: ID of the payout batch this draft belongs to.
+                          status:
+                            type: string
+                            x-stoplight:
+                              id: ouk1g7goum9l2
+                            description: current draft status
+                          err_msg:
+                            type: string
+                            x-stoplight:
+                              id: hckes4hmzd6ok
+                            description: error message if creation/validation failed; otherwise null
+                      payment_request:
+                        type: object
+                        x-stoplight:
+                          id: 65e47vk941yvw
+                        description: Returned only if the payment request was successfully created.
+                        required:
+                          - id
+                          - template_id
+                          - withdraw
+                          - payment_purpose
+                          - template
+                          - status
+                        properties:
+                          id:
+                            type: integer
+                            x-stoplight:
+                              id: kgbnw70efmjdl
+                          template_id:
+                            type: integer
+                            x-stoplight:
+                              id: itocftj01hke8
+                            description: Template ID
+                          withdraw:
+                            type: object
+                            x-stoplight:
+                              id: e5uvc5em5m0uw
+                            required:
+                              - currency
+                              - amount
+                              - fee
+                            description: Details about the withdrawal from the account.
+                            properties:
+                              currency:
+                                type: string
+                                x-stoplight:
+                                  id: zwbeyfb62j9hc
+                                description: withdrawal currency.
+                              amount:
+                                type: string
+                                x-stoplight:
+                                  id: et6207hiv0usj
+                                description: amount without fee.
+                              fee:
+                                type: string
+                                x-stoplight:
+                                  id: sght0xmqdkbvd
+                                description: withdrawal fee.
+                          exchange:
+                            type: object
+                            x-stoplight:
+                              id: xa5trvbszqvtn
+                            description: 'exchange (object, optional, present only if status = "success")'
+                            properties:
+                              currency:
+                                type: string
+                                x-stoplight:
+                                  id: q17cu90bhad9g
+                                description: target currency after exchange.
+                              rate:
+                                type: string
+                                x-stoplight:
+                                  id: arwhpg8x9mmvt
+                                description: applied exchange rate.
+                              amount:
+                                type: string
+                                x-stoplight:
+                                  id: hbnyvz47kas3l
+                                description: converted amount without fee.
+                              fee:
+                                type: string
+                                x-stoplight:
+                                  id: pvooo3rprlk78
+                                description: exchange fee.
+                              total_amount:
+                                type: string
+                                x-stoplight:
+                                  id: 8cnfxfoekebf5
+                                description: total exchanged amount including fee.
+                          payment:
+                            type: object
+                            x-stoplight:
+                              id: g2mivn7r5m7mu
+                            description: 'payment (object, optional, present only if status = "success")'
+                            properties:
+                              currency:
+                                type: string
+                                x-stoplight:
+                                  id: xdfxs7co9n2j5
+                                description: payment currency.
+                              amount:
+                                type: string
+                                x-stoplight:
+                                  id: hszwdrn2hitq4
+                                description: payment amount without fee.
+                              fee:
+                                type: string
+                                x-stoplight:
+                                  id: 9ogqo2hcbg0ry
+                                description: payment fee.
+                          payment_purpose:
+                            type: string
+                            x-stoplight:
+                              id: 2zljbc8r6b5fy
+                            description: optional payment description or purpose.
+                          template:
+                            $ref: '#/components/schemas/Template'
+                          status:
+                            type: string
+                            x-stoplight:
+                              id: 2woxk9xhhcnw0
+                            description: status of the payment request
+              examples:
+                Example 1:
+                  value:
+                    data:
+                      draft_payment_request:
+                        id: 214
+                        request_id: '11112222333346045'
+                        payout_id: 26922
+                        status: 1
+                        err_msg: null
+                        created_at: '2025-09-08T08:18:08+00:00'
+                        updated_at: '2025-09-08T08:18:08+00:00'
+                      payment_request:
+                        id: 133199
+                        template_id: 76678
+                        withdraw:
+                          currency: USD
+                          amount: '90'
+                          fee: '0'
+                        exchange:
+                          currency: USDTE
+                          rate: '1'
+                          amount: '76'
+                          fee: '14'
+                          total_amount: '90'
+                        payment:
+                          currency: USDTE
+                          amount: '76'
+                          fee: '14'
+                        payment_purpose: null
+                        template:
+                          id: 76678
+                          payment_method_id: 77
+                          title: template 23
+                          identity:
+                            wallet_address: '0xAec96DEaA44041eFF8F07dB98BA0B695fde2374F'
+                          created_at: '2025-08-07T15:24:29+00:00'
+                          updated_at: '2025-08-08T11:31:28+00:00'
+                        status: new
+                        created_at: '2025-09-08T08:18:09+00:00'
+                        updated_at: '2025-09-08T08:18:09+00:00'
+        '404':
+          description: Not Found
+      operationId: get-payment-requests-v1-status
+      x-stoplight:
+        id: 121fvm9ntgc8u
+      description: Retrieves the status of a Payment Request using the **request_id** from a previously created single or bulk request.
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: 'Token from partner grant '
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - request_id
+              properties:
+                request_id:
+                  type: string
+                  x-stoplight:
+                    id: ny0ptx0w9k4gr
+  '/payment-requests/v1/payout/{payoutId}':
+    parameters:
+      - schema:
+          type: string
+        name: payoutId
+        in: path
+        required: true
+    get:
+      summary: Get Status of Payout batch
+      tags:
+        - Payment Requests
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: pjmlepfqst2mm
+                    required:
+                      - id
+                      - request_id
+                      - status
+                      - err_msg
+                      - payment_request_status_count
+                    properties:
+                      id:
+                        type: integer
+                        x-stoplight:
+                          id: av2f89pz0175i
+                        description: internal payout ID.
+                      request_id:
+                        type: string
+                        x-stoplight:
+                          id: ok44iuvf3l6t6
+                        description: unique identifier for this payout batch.
+                      status:
+                        type: integer
+                        x-stoplight:
+                          id: ixqow6wi4l87b
+                        description: current status of the payout batch.
+                      err_msg:
+                        type: string
+                        x-stoplight:
+                          id: j3xi1egk130od
+                        description: error message if the batch failed; otherwise null
+                      payment_request_status_count:
+                        type: object
+                        x-stoplight:
+                          id: qp3ifo0eydr16
+                        required:
+                          - requested
+                          - pending
+                          - completed
+                          - not_created
+                        description: summary of the statuses of all individual Payment Requests in the batch.
+                        properties:
+                          requested:
+                            type: integer
+                            x-stoplight:
+                              id: 9gy5xx7noetjf
+                            description: number of requests that were submitted.
+                          pending:
+                            type: integer
+                            x-stoplight:
+                              id: wkoxd88l3a5no
+                            description: number of requests that are still in progress.
+                          completed:
+                            type: integer
+                            x-stoplight:
+                              id: 7lubu2mc9g6i4
+                            description: 'it represents all requests that have reached a **final** status, whether success or error.'
+                          not_created:
+                            type: integer
+                            x-stoplight:
+                              id: 3vxvn2bwu3jyn
+                            description: number of requests that were not created due to errors or validation failures.
+              examples:
+                Example 1:
+                  value:
+                    data:
+                      id: 26915
+                      request_id: 6dc1cb6c-a0ff-42f2-97a8-2653e2dabfbe
+                      status: 2
+                      err_msg: null
+                      payment_request_status_count:
+                        requested: 2
+                        pending: 0
+                        completed: 0
+                        not_created: 0
+        '404':
+          description: Not Found
+      operationId: get-payment-requests-v1-payout-payoutId
+      x-stoplight:
+        id: di1mw6gchsvyd
+      description: |-
+        This endpoint is used to retrieve the status of a payout batch.
+
+        It provides information about the batch itself as well as the status of all individual Payment Requests included in the batch.
+
+        The response includes overall batch information and a summary of the statuses of all Payment Requests in that batch.
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: 'Token from partner grant '
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
 components:
   schemas:
     Country:
@@ -675,6 +2287,7 @@ components:
           enum:
             - cyprus
             - canada
+            - kazakhstan
         currency:
           x-stoplight:
             id: gbwrw7458tfl0
@@ -827,6 +2440,7 @@ components:
                   id: e2cph8ripv7l5
                 format: date
                 description: 'Payment date. If not provided, the current date will be used.'
+      description: ''
     McPaymentResource:
       type: object
       x-examples:
@@ -869,6 +2483,28 @@ components:
                   invoice_path:
                     type: string
                     description: Invoice path to PDF file
+    Template:
+      title: Template
+      x-stoplight:
+        id: bwt76jxdf9zq6
+      type: object
+      properties:
+        id:
+          type: number
+          x-stoplight:
+            id: ucgfour81lv5w
+        payment_method_id:
+          type: number
+          x-stoplight:
+            id: yphjtpzyx1k9i
+        title:
+          type: string
+          x-stoplight:
+            id: 09guaeapoi3oy
+        identity:
+          type: object
+          x-stoplight:
+            id: s7mh9lcy7oj0q
   securitySchemes:
     Client credentials:
       type: oauth2

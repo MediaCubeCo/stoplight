@@ -5,11 +5,26 @@ tags: [changelog]
 
 # Changelog
 
+## September 08, 2025
+
+### Added
+- New [Get Payment Methods](reference/api.yaml/paths/~1payment-requests~1v1~1payment-methods/get) endpoint: Retrieve a list of all available Payment Methods.
+- New [Get Payment Method Fields](reference/api.yaml/paths/~1payment-requests~1v1~1payment-methods~1fields/post) endpoint: Retrieve the required fields for a specific Payment Method.
+- New [Create template](reference/api.yaml/paths/~1payment-requests~1v1~1templates/post) endpoint: Create a new Payment Request template.
+- New [Get templates](reference/api.yaml/paths/~1payment-requests~1v1~1templates/get) endpoint: Retrieve all existing Payment Request templates.
+- New [Request Template Information](reference/api.yaml/paths/~1payment-requests~1v1~1templates~1{templateId}/get) endpoint: View details of a specific template by its ID.
+- New [Delete Template](reference/api.yaml/paths/~1payment-requests~1v1~1templates~1{templateId}/delete) endpoint: Delete a template by its ID.
+- New [Calculate Payment Request](reference/api.yaml/paths/~1payment-requests~1v1~1calculate/get) endpoint: Perform a preliminary calculation for a Payment Request to see fees, exchange rates, and totals.
+- New [Create Single Payment Request](reference/api.yaml/paths/~1payment-requests~1v1~1single/post) endpoint: Create a single Payment Request synchronously; returns the final transaction if validation passes.
+- New [Create Bulk Payment Requests](reference/api.yaml/paths/~1payment-requests~1v1~1bulk/post) endpoint: Create multiple Payment Requests (up to 50 per batch). Basic validation is performed synchronously; additional checks run asynchronously.
+- New [Get Payment Request Status](reference/api.yaml/paths/~1payment-requests~1v1~1status/get) endpoint: Retrieve the status of a Payment Request using the request_id from single or bulk creation.
+- New [Get Status of Payout batch](reference/api.yaml/paths/~1payment-requests~1v1~1payout~1{payoutId}/get) endpoint: Retrieve the status of a payout batch and a summary of all included Payment Requests, including how many reached a final status.
+
 ## March 06, 2025
 
 ### Added
-- New `POST /payments/v2/payout` endpoint: Allows the creation of payouts for different user wallets. For more details, refer to the [Create Payout Payment [v2]](reference/api.yaml/paths/~1payments~1v2~1payout/post).
-- New `GET /payments/v2/status` endpoint: Enables retrieval of payment statuses. For more details, refer to the [Get Payment [v2]](reference/api.yaml/paths/~1payments~1v2~1status/get).
+- New [Create payout payment v2](reference/api.yaml/paths/~1payments~1v2~1payout/post) endpoint: Allows the creation of payouts for different user wallets.
+- New [Get payment](reference/api.yaml/paths/~1payments~1v2~1status/get) endpoint: Enables retrieval of payment statuses.
 
 ### Changed
 - Updated `GET /oauth/user` response: Added a new `wallets` field to replace the deprecated `wallet` field. It is recommended to use `wallets` instead. For more details, refer to the [User](reference/api.yaml/paths/~1oauth~1user/get).
