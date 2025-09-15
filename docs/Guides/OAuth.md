@@ -7,7 +7,7 @@ stoplight-id: xxf1peto7qas8
 
 ## Introduction
 
-This document describes the authorization process using the `authorization_code` grant type in OAuth 2.0. This method is used to obtain an access token after the user successfully authorizes the application. Code samples can be found [here](docs/Cookbook.md), see `OAuth` section.
+This document describes the authorization process using the `authorization_code` grant type in OAuth 2.0. This method is used to obtain an access token after the user successfully authorizes the application. Code samples can be found at Cookbook section. 
 
 ## `authorization_code` Grant Flow
 
@@ -34,3 +34,7 @@ sequenceDiagram
     Application->>AuthServer: Requests tokens (code)
     AuthServer->>Application: Returns access_token and refresh_token
 ```
+
+## `partner` Grant Flow
+
+Fetch API tokens via `POST /oauth/tokens`, see Cookbook Payments section for examples
