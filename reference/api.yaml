@@ -3,18 +3,15 @@ info:
   title: MC Pay
   version: '1'
   description: |-
-    ## Overview
-    With our API you can execute B2P payments, transferring funds from companies to users, and support withdrawals by creating Payment Requests.
+    ## API Call
+    Using our APIs, you can execute requests to create transactions for your users within MC Pay (B2P Payments), and withdraw money from MC Pay using various payment methods (Payment Request).
 
-    ## Making API Calls
-    In order to perform any API call, the access token must be obtained. To do this, you are required to send an HTTP request to the [Initial Authentication](reference/api.yaml/paths/~1oauth~1token/post) endpoint.
-
-    As a result, you will receive an access token that will be used to authenticate your requests.
+    To perform any API call, you must first obtain a **client_id** and **client_secret** from your personal manager. Once you have these credentials, you need to obtain an access token. To do this, send an HTTP request to the [Initial Authentication](reference/api.yaml/paths/~1oauth~1token/post) endpoint. You will receive an access token that will be used to authenticate all your subsequent requests.
 
     ## Asynchronous Workflow
-    MC Pay implements an Asynchronous Workflow, a type of communication between technological components that allows MC Pay to be responsive to different events, rather than having to wait until the requested tasks are finished.
+    MC Pay implements an asynchronous workflow, which is a type of communication between technological components that allows MC Pay to remain responsive to different events rather than waiting for requested tasks to complete.
 
-    For example, when MC Pay receives a request to create a Bulk Payment Request, the Partner is immediately notified that the request has been accepted. In the meantime, MC Pay queues the request.
+    For example, when MC Pay receives a request to create a Bulk Payment Request, the partner is immediately notified that the request has been accepted. Meanwhile, MC Pay queues the request for processing.
   termsOfService: ''
 servers:
   - url: 'https://mcpay.io'
@@ -893,6 +890,15 @@ paths:
                   type: object
                   x-stoplight:
                     id: 4gpqh7cfdorb7
+            examples:
+              Example 1:
+                value:
+                  region: cyprus
+                  currency: USD
+                  payment_method_id: 52
+                  identity:
+                    field_1: text
+                    field_2: text
     parameters: []
   /payment-requests/v1/templates:
     post:
@@ -909,6 +915,16 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Template'
+              examples:
+                Example 1:
+                  value:
+                    data:
+                      id: 1
+                      payment_method_id: 54
+                      title: To an account in EUR
+                      identity:
+                        field_1: text
+                        field_2: text
         '401':
           description: Unauthorized
         '422':
@@ -987,6 +1003,16 @@ paths:
                   type: string
                   x-stoplight:
                     id: 9puseqohsm0th
+            examples:
+              Example 1:
+                value:
+                  region: cyprus
+                  currency: USD
+                  payment_method_id: 54
+                  identity:
+                    field_1: text
+                    field_2: text
+                  title: To an account in EUR
     get:
       summary: Get templates
       tags:
@@ -1096,6 +1122,49 @@ paths:
                     x-stoplight:
                       id: zonimhwrx708h
                     description: Total number of entries in the response.
+              examples:
+                Example 1:
+                  value:
+                    data:
+                      - id: 1
+                        payment_method_id: 10
+                        title: Webmoney second
+                        identity:
+                          field_1: text
+                          field_2: text
+                        created_at: '2025-10-27T15:07:25+00:00'
+                        updated_at: '2025-10-27T15:07:25+00:00'
+                      - id: 2
+                        payment_method_id: 10
+                        title: Webmoney first
+                        identity:
+                          field_1: text
+                          field_2: text
+                        created_at: '2025-10-27T15:06:38+00:00'
+                        updated_at: '2025-10-27T15:06:38+00:00'
+                    links:
+                      first: 'https://mp-stage.mediacube.dev/payment-requests/v1/templates?page=1'
+                      last: 'https://mp-stage.mediacube.dev/payment-requests/v1/templates?page=1'
+                      prev: null
+                      next: null
+                    meta:
+                      current_page: 1
+                      from: 1
+                      last_page: 1
+                      links:
+                        - url: null
+                          label: '&laquo; Previous'
+                          active: false
+                        - url: 'https://mp-stage.mediacube.dev/payment-requests/v1/templates?page=1'
+                          label: '1'
+                          active: true
+                        - url: null
+                          label: Next &raquo;
+                          active: false
+                      path: 'https://mp-stage.mediacube.dev/payment-requests/v1/templates'
+                      per_page: 20
+                      to: 2
+                      total: 2
         '401':
           description: Unauthorized
         '422':
@@ -1393,7 +1462,10 @@ paths:
       operationId: get-payment-requests-v1-calculate
       x-stoplight:
         id: 990goccslspe6
-      description: Use this method to get a preliminary Payment Request calculation.
+      description: |-
+        Use this method to get a preliminary Payment Request calculation.
+
+        > If the payment involves currency conversion, the calculated amount is not final and may change if the exchange rate changes at the moment when the payment is processed.
       security:
         - Client credentials: []
       parameters:
@@ -1488,23 +1560,29 @@ paths:
                             type: integer
                             x-stoplight:
                               id: 6o4zzln4astce
-                            description: current payout status
+                            description: |-
+                              current payout status. Possible values:
+                              - **1** — process (payout is being processed)
+                              - **2** — success (payout completed successfully)
+                              - **3** — error (payout failed)
                           err_msg:
                             type: string
                             x-stoplight:
                               id: gp8q19rhy9r8h
-                            description: 'error code if the payout failed, otherwise null'
+                            description: |-
+                              error code if the payout failed, otherwise null.
+                              You can see the list of error codes [here](docs/Reference%20materials/ErrorCodes.md).
                       payment_request:
                         type: object
                         x-stoplight:
                           id: wysqyz8s9gtyr
+                        description: Contains the newly created payment request.
                         required:
                           - id
                           - template_id
                           - withdraw
                           - payment_purpose
                           - status
-                        description: Contains the newly created payment request.
                         properties:
                           id:
                             type: integer
@@ -1520,11 +1598,11 @@ paths:
                             type: object
                             x-stoplight:
                               id: 6pu2yc0q9dlhx
+                            description: withdrawal details.
                             required:
                               - currency
                               - amount
                               - fee
-                            description: withdrawal details.
                             properties:
                               currency:
                                 type: string
@@ -1550,7 +1628,7 @@ paths:
                             type: string
                             x-stoplight:
                               id: seennjcy4l3le
-                            description: current status of the payment request
+                            description: 'current status of the payment request. You can see detailed status descriptions [here](docs/Reference%20materials/PaymentRequestStatuses.md)'
               examples:
                 Example 1:
                   value:
@@ -1628,6 +1706,11 @@ paths:
                   x-stoplight:
                     id: o3ttdg2nhwcjv
                   description: Unique string like UUIDv4
+                payment_purpose:
+                  type: string
+                  x-stoplight:
+                    id: u0jc4tqpul1cv
+                  description: optional purpose of the payment.
             examples:
               Example 1:
                 value:
@@ -1673,12 +1756,12 @@ paths:
                         type: object
                         x-stoplight:
                           id: wnycve0690tlg
+                        description: Represents the created payout batch. This object is common to both **single** and **bulk** requests.
                         required:
                           - id
                           - request_id
                           - status
                           - err_msg
-                        description: Represents the created payout batch. This object is common to both **single** and **bulk** requests.
                         properties:
                           id:
                             type: integer
@@ -1694,12 +1777,18 @@ paths:
                             type: integer
                             x-stoplight:
                               id: stjyjlr2eeat4
-                            description: current payout status
+                            description: |-
+                              current payout status. Possible values:
+                              - **1** — process (payout is being processed)
+                              - **2** — success (payout completed successfully)
+                              - **3** — error (payout failed)
                           err_msg:
                             type: integer
                             x-stoplight:
                               id: a2mpyq4kop042
-                            description: 'error code if the payout failed, otherwise null'
+                            description: |-
+                              error code if the payout failed, otherwise null.
+                              You can see the list of error codes [here](docs/Reference%20materials/ErrorCodes.md).
               examples:
                 Example 1:
                   value:
@@ -1808,6 +1897,11 @@ paths:
                           id: mscrq0y2tqhhk
                         description: Withdrawal amount
                         format: float
+                      payment_purpose:
+                        type: string
+                        x-stoplight:
+                          id: anloiute9iyq1
+                        description: optional purpose of the payment.
             examples:
               Example 1:
                 value:
@@ -1847,22 +1941,22 @@ paths:
                     type: object
                     x-stoplight:
                       id: bj91v85l2s7d0
+                    description: Wrapper containing draft and final payment request details.
                     required:
                       - draft_payment_request
                       - payment_request
-                    description: Wrapper containing draft and final payment request details.
                     properties:
                       draft_payment_request:
                         type: object
                         x-stoplight:
                           id: q5j7kxk6zem2o
+                        description: Always present.
                         required:
                           - id
                           - request_id
                           - payout_id
                           - status
                           - err_msg
-                        description: Always present.
                         properties:
                           id:
                             type: integer
@@ -1883,12 +1977,17 @@ paths:
                             type: string
                             x-stoplight:
                               id: ouk1g7goum9l2
-                            description: current draft status
+                            description: |-
+                              current draft status. Possible values:
+                              - **1** — success (payout completed successfully)
+                              - **2** — error (payout failed)
                           err_msg:
                             type: string
                             x-stoplight:
                               id: hckes4hmzd6ok
-                            description: error message if creation/validation failed; otherwise null
+                            description: |-
+                              error message if creation/validation failed; otherwise null.
+                              You can see the list of error codes [here](docs/Reference%20materials/ErrorCodes.md).
                       payment_request:
                         type: object
                         x-stoplight:
@@ -1915,11 +2014,11 @@ paths:
                             type: object
                             x-stoplight:
                               id: e5uvc5em5m0uw
+                            description: Details about the withdrawal from the account.
                             required:
                               - currency
                               - amount
                               - fee
-                            description: Details about the withdrawal from the account.
                             properties:
                               currency:
                                 type: string
@@ -1999,7 +2098,7 @@ paths:
                             type: string
                             x-stoplight:
                               id: 2woxk9xhhcnw0
-                            description: status of the payment request
+                            description: 'current status of the payment request. You can see detailed status descriptions [here](docs/Reference%20materials/PaymentRequestStatuses.md)'
               examples:
                 Example 1:
                   value:
@@ -2081,6 +2180,7 @@ paths:
                   type: string
                   x-stoplight:
                     id: ny0ptx0w9k4gr
+                  description: Retrieves the status of a Payment Request using the request_id from a previously created single or bulk request.
   '/payment-requests/v1/payout/{payoutId}':
     parameters:
       - schema:
@@ -2127,22 +2227,28 @@ paths:
                         type: integer
                         x-stoplight:
                           id: ixqow6wi4l87b
-                        description: current status of the payout batch.
+                        description: |-
+                          current status of the payout batch. Possible values:
+                          - **1** — process (payout is being processed)
+                          - **2** — success (payout completed successfully)
+                          - **3** — error (payout failed)
                       err_msg:
                         type: string
                         x-stoplight:
                           id: j3xi1egk130od
-                        description: error message if the batch failed; otherwise null
+                        description: |-
+                          error code if the payout failed, otherwise null.
+                          You can see the list of error codes [here](docs/Reference%20materials/ErrorCodes.md).
                       payment_request_status_count:
                         type: object
                         x-stoplight:
                           id: qp3ifo0eydr16
+                        description: summary of the statuses of all individual Payment Requests in the batch.
                         required:
                           - requested
                           - pending
                           - completed
                           - not_created
-                        description: summary of the statuses of all individual Payment Requests in the batch.
                         properties:
                           requested:
                             type: integer
@@ -2183,7 +2289,7 @@ paths:
       x-stoplight:
         id: di1mw6gchsvyd
       description: |-
-        This endpoint is used to retrieve the status of a payout batch.
+        This endpoint is used to retrieve the status of a payout batch using the **payout_id** from a previously created single or bulk request.
 
         It provides information about the batch itself as well as the status of all individual Payment Requests included in the batch.
 
@@ -2505,6 +2611,16 @@ components:
           type: object
           x-stoplight:
             id: s7mh9lcy7oj0q
+      x-examples:
+        Example 1:
+          id: 1
+          payment_method_id: 54
+          title: To an account in EUR
+          identity:
+            beneficiary_name: John Doe
+            country: DE
+            iban: DE12345678901234567890
+            bic: FTCSSESS
   securitySchemes:
     Client credentials:
       type: oauth2
