@@ -2238,7 +2238,7 @@ paths:
                           id: j3xi1egk130od
                         description: |-
                           error code if the payout failed, otherwise null.
-                          You can see the list of error codes [here](ErrorCodes.md).
+                          You can see the list of error codes [here](Errors.md).
                       payment_request_status_count:
                         type: object
                         x-stoplight:
