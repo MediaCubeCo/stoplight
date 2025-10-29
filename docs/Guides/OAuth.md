@@ -48,4 +48,4 @@ This flow is typically applied when the partner system is pre-authorized and act
 3. If the request is valid, the server issues an `access_token`.
 4. The **Partner Application** uses the `access_token` to access protected API endpoints.
 
-See the [CookBook](Cookbook.md) – Payments section for implementation examples.
+See the [CookBook](docs/Cookbook.md) – Payments section for implementation examples.
