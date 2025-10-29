@@ -5,7 +5,7 @@ tags: [Guides]
 
 # Payment Request
 
-[File in a different folder](OAuth.md)
+[File in a different folder](../Reference materials/PaymentRequestStatuses.md)
 
 The Payment Requests API allows clients to create, calculate, and track single or bulk payments.
 
