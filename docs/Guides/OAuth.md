@@ -37,4 +37,15 @@ sequenceDiagram
 
 ## `partner` Grant Flow
 
-Fetch API tokens via `POST /oauth/tokens`, see Cookbook Payments section for examples
+The `partner` grant type is used by trusted partner applications to obtain API tokens without requiring user interaction.
+
+This flow is typically applied when the partner system is pre-authorized and acts on behalf of its users or internal integrations.
+
+### Steps in the Process
+
+1. The **Partner Application** sends a request `POST /oauth/tokens` to the authorization server endpoint.
+2. The **Authorization Server** validates the credentials and permissions.
+3. If the request is valid, the server issues an `access_token`.
+4. The **Partner Application** uses the `access_token` to access protected API endpoints.
+
+See the Cookbook – Payments section for implementation examples.
