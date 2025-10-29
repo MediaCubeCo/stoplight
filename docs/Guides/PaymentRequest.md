@@ -5,13 +5,12 @@ tags: [Guides]
 
 # Payment Request
 
-[File in a different folder](../Reference materials/PaymentRequestStatuses.md)
-
-The Payment Requests API allows clients to create, calculate, and track single or bulk payments.
+You can execute requests to withdraw money from MC Pay using various payment methods.
 
 ## Authorization
 
-All API requests require authorization using OAuth 2.0 (`partner` grant).
+All API requests require authorization using OAuth 2.0 (`partner` grant). For more details, refer to the [OAuth 2.0 Authorization Server API
+](OAuth.md).
 
 ## Payment Request Workflow
 

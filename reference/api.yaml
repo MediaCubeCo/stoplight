@@ -834,6 +834,8 @@ paths:
         Provides a way to retrieve associated required fields based on specified query parameters and fields required for each payment method.
 
         > Some payment methods may have different required fields depending on the request query **identity** field. Use the request without the **identity** field first to check if the result contains a field with the **dynamic** flag. And then pass the field **identity** to get the new required fields.
+        > 
+        > For example, the `bank_transfer` payment method may have **country-dependent required** fields. The `country` field is marked with `"dynamic": true` , because its value determines which other fields are needed.
       security:
         - Client credentials: []
       parameters:
@@ -890,6 +892,7 @@ paths:
                   type: object
                   x-stoplight:
                     id: 4gpqh7cfdorb7
+                  description: 'provided with the required dynamic values (for example, `"country": "DE"`), the response will include the updated set of required fields for that context.'
             examples:
               Example 1:
                 value:
@@ -1256,6 +1259,16 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Template'
+              examples:
+                Example 1:
+                  value:
+                    data:
+                      id: 1
+                      payment_method_id: 54
+                      title: To an account in EUR
+                      identity:
+                        field_1: text
+                        field_2: text
         '404':
           description: Not Found
       operationId: get-payment-requests-v1-templates-templateId
@@ -1571,7 +1584,7 @@ paths:
                               id: gp8q19rhy9r8h
                             description: |-
                               error code if the payout failed, otherwise null.
-                              You can see the list of error codes [here](docs/Reference%20materials/ErrorCodes.md).
+                              You can see the list of error codes [here](docs/references/Errors.md).
                       payment_request:
                         type: object
                         x-stoplight:
@@ -1628,7 +1641,7 @@ paths:
                             type: string
                             x-stoplight:
                               id: seennjcy4l3le
-                            description: 'current status of the payment request. You can see detailed status descriptions [here](docs/Reference%20materials/PaymentRequestStatuses.md)'
+                            description: 'current status of the payment request. You can see detailed status descriptions [here](docs/references/PaymentRequestStatuses.md)'
               examples:
                 Example 1:
                   value:
@@ -1788,7 +1801,7 @@ paths:
                               id: a2mpyq4kop042
                             description: |-
                               error code if the payout failed, otherwise null.
-                              You can see the list of error codes [here](docs/Reference%20materials/ErrorCodes.md).
+                              You can see the list of error codes [here](docs/references/Errors.md).
               examples:
                 Example 1:
                   value:
@@ -1987,7 +2000,7 @@ paths:
                               id: hckes4hmzd6ok
                             description: |-
                               error message if creation/validation failed; otherwise null.
-                              You can see the list of error codes [here](docs/Reference%20materials/ErrorCodes.md).
+                              You can see the list of error codes [here](docs/references/Errors.md).
                       payment_request:
                         type: object
                         x-stoplight:
@@ -2098,7 +2111,7 @@ paths:
                             type: string
                             x-stoplight:
                               id: 2woxk9xhhcnw0
-                            description: 'current status of the payment request. You can see detailed status descriptions [here](docs/Reference%20materials/PaymentRequestStatuses.md)'
+                            description: 'current status of the payment request. You can see detailed status descriptions [here](docs/references/PaymentRequestStatuses.md)'
               examples:
                 Example 1:
                   value:
@@ -2290,8 +2303,6 @@ paths:
         id: di1mw6gchsvyd
       description: |-
         This endpoint is used to retrieve the status of a payout batch using the **payout_id** from a previously created single or bulk request.
-
-        It provides information about the batch itself as well as the status of all individual Payment Requests included in the batch.
 
         The response includes overall batch information and a summary of the statuses of all Payment Requests in that batch.
       security:
