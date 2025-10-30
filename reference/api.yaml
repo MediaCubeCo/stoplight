@@ -2201,6 +2201,7 @@ paths:
         name: payoutId
         in: path
         required: true
+        description: Retrieve the status of a payout batch using the payout_id from a previously created single or bulk request.
     get:
       summary: Get Status of Payout batch
       tags:
