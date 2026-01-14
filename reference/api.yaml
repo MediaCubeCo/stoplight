@@ -356,7 +356,7 @@ paths:
       description: |-
         The endpoint allows you to create employee invitations. Supports batch creating
 
-        > The **employee.invitations** scope is needed to access
+        > **employee.invitations** scope is required to access
       parameters:
         - schema:
             type: string
@@ -425,7 +425,7 @@ paths:
       description: |-
         The endpoint allows you to get employee invitations
 
-        > The **employee.invitations** scope is needed to access
+        > **employee.invitations** scope is required to access
       security:
         - Client credentials: []
       parameters:
@@ -475,7 +475,7 @@ paths:
       description: |-
         The endpoint allows you to get company positions
 
-        > The **company.positions** scope is needed to access
+        > **company.positions** scope is required to access
       security:
         - Client credentials: []
       parameters:
