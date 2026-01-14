@@ -2817,6 +2817,7 @@ components:
           type: integer
           x-stoplight:
             id: 31tqzd3w3arbc
+          minimum: 1
         email:
           type: string
           x-stoplight:
