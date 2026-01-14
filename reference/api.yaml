@@ -485,6 +485,7 @@ paths:
           in: header
           name: Authorization
           required: true
+          description: Token from partner grant
         - schema:
             type: string
             example: application/json
