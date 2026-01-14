@@ -353,7 +353,10 @@ paths:
         id: c1t0s6oqcjyu4
       security:
         - Client credentials: []
-      description: The endpoint allows you to create employee invitations. Supports batch creating
+      description: |-
+        The endpoint allows you to create employee invitations. Supports batch creating
+
+        > Must have the **employee.invitations** scope
       parameters:
         - schema:
             type: string
@@ -419,7 +422,10 @@ paths:
       operationId: get-oauth-employee-invitations
       x-stoplight:
         id: c6cj4egqx0zj9
-      description: The endpoint allows you to get employee invitations
+      description: |-
+        The endpoint allows you to get employee invitations
+
+        > Must have the **employee.invitations** scope
       security:
         - Client credentials: []
       parameters:
@@ -466,7 +472,10 @@ paths:
       operationId: get-oauth-company-positions
       x-stoplight:
         id: r6f0mhiwtkdof
-      description: The endpoint allows you to get company positions
+      description: |-
+        The endpoint allows you to get company positions
+
+        > Must have the **company.positions** scope
       security:
         - Client credentials: []
       parameters:
