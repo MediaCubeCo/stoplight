@@ -314,6 +314,180 @@ paths:
         - Auth code: []
       tags:
         - OAuth
+  /oauth/employee-invitations:
+    post:
+      summary: Create employee invitations
+      tags:
+        - OAuth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  Example 1:
+                    data:
+                      - id: 1
+                        email: example@example.com
+                        status: 2
+                        created_at: '2025-11-25T09:44:39+00:00'
+                        updated_at: '2025-12-12T16:49:44+00:00'
+                      - id: 2
+                        email: example@example.com
+                        status: 1
+                        created_at: '2025-11-03T14:23:10+00:00'
+                        updated_at: '2025-12-12T16:49:44+00:00'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmployeeInvitation'
+        '401':
+          description: Your Access Token does not have access
+        '422':
+          description: Incorrect data
+      operationId: post-oauth-employee-invitations
+      x-stoplight:
+        id: c1t0s6oqcjyu4
+      security:
+        - Client credentials: []
+      description: The endpoint allows you to create employee invitations. Supports batch creating
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: Token from partner grant
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  position_id: 2
+                  emails:
+                    - example@example.com
+                    - ex@example.com
+              required:
+                - position_id
+                - emails
+              properties:
+                position_id:
+                  type: integer
+                emails:
+                  type: array
+                  items:
+                    type: string
+            examples: {}
+    get:
+      summary: Get employee invitations
+      tags:
+        - OAuth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    x-stoplight:
+                      id: gq7ia3o4yn4bn
+                    items:
+                      $ref: '#/components/schemas/EmployeeInvitation'
+        '401':
+          description: Your Access Token does not have access
+      operationId: get-oauth-employee-invitations
+      x-stoplight:
+        id: c6cj4egqx0zj9
+      description: The endpoint allows you to get employee invitations
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          description: Token from partner grant
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
+  /oauth/company/positions:
+    get:
+      summary: Get company positions
+      tags:
+        - OAuth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    x-stoplight:
+                      id: 3vrtavfpjq3qc
+                    items:
+                      $ref: '#/components/schemas/CompanyPosition'
+        '401':
+          description: Your Access Token does not have access
+      operationId: get-oauth-company-positions
+      x-stoplight:
+        id: r6f0mhiwtkdof
+      description: The endpoint allows you to get company positions
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+            example: Bearer <jwt-token>
+          in: header
+          name: Authorization
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Content-Type
+          required: true
+        - schema:
+            type: string
+            example: application/json
+          in: header
+          name: Accept
+          required: true
   /payments:
     post:
       summary: 'Create payout payment [v1]'
@@ -2633,6 +2807,57 @@ components:
             country: DE
             iban: DE12345678901234567890
             bic: FTCSSESS
+    EmployeeInvitation:
+      title: EmployeeInvitation
+      x-stoplight:
+        id: vfys3waa8caw5
+      type: object
+      properties:
+        id:
+          type: integer
+          x-stoplight:
+            id: 31tqzd3w3arbc
+        email:
+          type: string
+          x-stoplight:
+            id: oszbwqou4005w
+        status:
+          x-stoplight:
+            id: gr9k8gz4vuv56
+          enum:
+            - 1
+            - 2
+          description: 'Statuses: 1 - invite, 2 - accept'
+        created_at:
+          type: string
+          x-stoplight:
+            id: embyf2lc3zz0f
+          format: date-time
+        updated_at:
+          type: string
+          x-stoplight:
+            id: 7byk72qa0okiy
+          format: date-time
+    CompanyPosition:
+      type: object
+      x-examples: {}
+      properties:
+        id:
+          type: integer
+          exclusiveMinimum: false
+          minimum: 1
+        name:
+          type: string
+        description:
+          type: string
+          maxLength: 255
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      description: ''
   securitySchemes:
     Client credentials:
       type: oauth2
