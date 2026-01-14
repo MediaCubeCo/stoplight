@@ -5,6 +5,13 @@ tags: [changelog]
 
 # Changelog
 
+## January 14, 2026
+
+### Added
+- New [Get company positions](reference/api.yaml/paths/~1oauth~1company~1positions/get) endpoint: Allows to get company positions.
+- New [Create employee invitations](reference/api.yaml/paths/~1oauth~1employee-invitations/post) endpoint: Allows to create employee invitations.
+- New [Get employee invitations](reference/api.yaml/paths/~1oauth~1employee-invitations/get) endpoint: Allows to get employee invitations.
+
 ## September 08, 2025
 
 ### Added
