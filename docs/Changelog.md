@@ -5,6 +5,11 @@ tags: [changelog]
 
 # Changelog
 
+## January 28, 2026
+
+### Added
+- New rate limit 300 request per minute
+
 ## January 14, 2026
 
 ### Added

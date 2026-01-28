@@ -6,6 +6,9 @@ stoplight-id: gpenrmnwrayjw
 
 You can execute requests to create transactions for your users within MC Pay.
 
+## Rate limits
+All API requests to B2P payments is 300 requests per minute
+
 ## Authorization
 
 All API requests require authorization using OAuth 2.0 (`partner` grant). For more details, refer to the [OAuth 2.0 Authorization Server API
