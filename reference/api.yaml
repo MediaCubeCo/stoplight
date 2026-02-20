@@ -781,8 +781,9 @@ paths:
       description: ''
   /payments/v2/transactions/export:
     get:
-      summary: 'Get payment [v2]'
-      tags: []
+      summary: 'Export transactions [v2]'
+      tags:
+        - B2P Payments / v2
       responses:
         '200':
           description: Binary
