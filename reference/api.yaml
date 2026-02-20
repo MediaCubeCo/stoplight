@@ -857,7 +857,7 @@ paths:
           required: true
       description: |-
         The endpoint allows you to download csv files of your transactions.
-        For this endpoint you must use the perio
+        For this endpoint you must use the period.
   /payment-requests/v1/payment-methods:
     get:
       summary: Get Payment Methods
