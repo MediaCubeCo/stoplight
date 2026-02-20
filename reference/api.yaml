@@ -779,6 +779,84 @@ paths:
                   x-stoplight:
                     id: v707jmvr0xmpd
       description: ''
+  /payments/v2/transactions/export:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: Binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              description: attachment; filename=transactions.csv
+          content:
+            application/octet-stream:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+      operationId: get-payments-v2-export
+      x-stoplight:
+        id: vbf1v34dg8770
+      security:
+        - Client credentials: []
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: 'Token from partner grant '
+        - schema:
+            type: string
+          in: header
+          name: Content-Type
+        - schema:
+            type: string
+          in: header
+          name: Accept
+        - schema:
+            type: array
+            uniqueItems: false
+            example: '?period_date[starts_at]=2026-02-01&period_date[ends_at]=2026-02-13'
+            minItems: 2
+            maxItems: 2
+          in: query
+          name: period_date
+          description: Range of dates must be less than 31 day
+        - schema:
+            type: string
+            enum:
+              - month
+              - week
+              - two-weeks
+              - quarter
+              - day
+          in: query
+          name: period
+        - schema:
+            type: string
+            enum:
+              - cyprus
+              - canada
+              - kazakhstan
+              - garna-cyprus
+          in: query
+          name: region
+          required: true
+        - schema:
+            type: string
+            enum:
+              - USD
+              - EUR
+              - RUB
+          in: query
+          name: currency
+          required: true
+      description: |-
+        The endpoint allows you to download csv files of your transactions.
+        For this endpoint you must use the perio
   /payment-requests/v1/payment-methods:
     get:
       summary: Get Payment Methods
@@ -2674,10 +2752,12 @@ components:
               amount: '16.99'
               description: Arrival from the referral system MediaCube Music
               date: '2025-02-02'
+              custom_id: '234234234'
             - wallet: '11112222333344445555'
               amount: '12'
               description: Arrival from the referral system MediaCube Music
               date: '2025-03-03'
+              custom_id: null
       required:
         - request_id
         - region
@@ -2742,7 +2822,12 @@ components:
                   id: e2cph8ripv7l5
                 format: date
                 description: 'Payment date. If not provided, the current date will be used.'
-      description: ''
+              custom_id:
+                type: string
+                x-stoplight:
+                  id: y4jtvfyukjzhg
+                description: An external id
+                maxLength: 255
     McPaymentResource:
       type: object
       x-examples:
