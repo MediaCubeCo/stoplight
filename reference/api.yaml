@@ -725,10 +725,12 @@ paths:
                       amount: '16.99'
                       description: Arrival from the referral system MediaCube Music
                       date: '2025-02-02'
+                      custom_id: '324234234'
                     - wallet: '0000111122223333'
                       amount: '12'
                       description: Arrival from the referral system MediaCube Music
                       date: '2025-03-03'
+                      custom_id: uuid-234230
         description: ''
   /payments/v2/status:
     get:
