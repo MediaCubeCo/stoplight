@@ -857,6 +857,15 @@ paths:
           in: query
           name: currency
           required: true
+        - schema:
+            type: string
+            enum:
+              - all
+              - positive
+              - negative
+            default: all
+          in: query
+          name: amount_type
       description: |-
         The endpoint allows you to download csv files of your transactions.
         For this endpoint you must use the period.
