@@ -5,6 +5,12 @@ tags: [changelog]
 
 # Changelog
 
+## Februay 20, 2026
+
+### Added
+- New [Export transactions](reference/api.yaml/paths/~1payments~1v2~1transactions~1export) endpoint: Allows you to download csv files of your transactions for the selected period
+- Custom Transaction Identifier (v2): Added a new optional `custom_id` string field to the B2P payments [v2] endpoints. This field allows partners to provide a custom string for easier transaction tracking and reconciliation. CSV exports support for `custom_id`
+
 ## January 28, 2026
 
 ### Added
@@ -45,9 +51,3 @@ tags: [changelog]
   - Added a new `wallet` query parameter to specify a particular wallet. If not provided, the default wallet is used.  
   - Introduced a `wallet` object in the response.  
   - For more details, refer to the [Balance Scope](reference/api.yaml/paths/~1oauth~1user~1balance/get).
-
-## Februay 20, 2026
-
-### Added
-- New [Export transactions](reference/api.yaml/paths/~1payments~1v2~1transactions~1export) endpoint: Allows you to download csv files of your transactions for the selected period
-- Custom Transaction Identifier (v2): Added a new optional `custom_id` string field to the B2P payments [v2] endpoints. This field allows partners to provide a custom string for easier transaction tracking and reconciliation. CSV exports support for `custom_id`
