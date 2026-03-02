@@ -5,7 +5,7 @@ tags: [changelog]
 
 # Changelog
 
-## Februay 20, 2026
+## February 20, 2026
 
 ### Added
 - New [Export transactions](reference/api.yaml/paths/~1payments~1v2~1transactions~1export) endpoint: Allows you to download csv files of your transactions for the selected period
